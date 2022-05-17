@@ -1538,8 +1538,8 @@ def apppend_list_of_dictionary_row(name_list):
     key_list = []
     value_list = []
 
-    # names = wb.get_sheet_names()  # this ones deprecated
-    names = wb.sheetnames()
+    names = wb.get_sheet_names()  # this ones deprecated
+    # names = wb.sheetnames()
      
     if pt_name not in names:
         wb.create_sheet(pt_name)
@@ -1706,13 +1706,13 @@ print("done adding visit lists")
 idg_notes_list = []
 def get_idg_data():
 
-    click('//*[@id="ctl00_TreeView1t15"]')
+    idg = click('//*[@id="ctl00_TreeView1t15"]')
     idgs = find_elements('//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[*]/td[1]/input')
     num_notes = 2
     # visit_notes_list = []
-    for visit_notes in visit_notes_page_one:
+    for idg in idgs:
         if num_notes <= 5:  #limiting it to first 3 idg
-            visit_note = click(f'//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[{num_notes}]/td[1]/input')
+            idg_note = click(f'//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[{num_notes}]/td[1]/input')
             num_notes += 1
 
             expand_idg_discussion = click('//*[@id="ctl00_ContentPlaceHolder1_ImgPnlComment"]')
@@ -1736,14 +1736,29 @@ def get_idg_data():
             'sign3': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignaturePCP"]',
             'sign4': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureRN"]',
             'sign5': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureChaplain"]',
-            
-            
-
-            
             }
 
+            for key, value in idg_notes_xp_dict.items():
+               
+                idg_dict = get_all_values(value, key)
+                idg_list.append(idg_dict)
 
-get_idg_data()
+
+            idg_list.insert(1,{'visit_type' : "IDG"})  # THIS WAS FORWARD ONE
+            idg_list.insert(2,{'date_of_qa' : today})# THIS WAS FORWARD ONE
+
+            idg_notes_list.append(idg_list)
+
+            print("Reopening idg notes to gather info.")
+            click('//*[@id="ctl00_TreeView1t15"]')
+
+    return idg_notes_list
+
+
+idg_notes_list = get_idg_data()
+
+for idg in idg_notes_list:
+    apppend_list_of_dictionary_row(idg)
 
 
 
