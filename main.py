@@ -1,3 +1,7 @@
+from openpyxl import workbook, load_workbook
+from openpyxl.styles import Alignment  # aligning
+from openpyxl.styles import Font  # changing style
+import openpyxl
 from selenium import webdriver
 import sys
 from time import sleep
@@ -9,6 +13,7 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver import ChromeOptions
 from datetime import datetime
+
 from datetime import date, timedelta
 from dateutil.parser import parse
 import time
@@ -36,7 +41,6 @@ import winsound
 import psycopg2
 
 
-
 pt_name = "Sobczak"
 
 # ana.doneza@gmail.com   Jcarr@artofhospicecare.com
@@ -53,8 +57,6 @@ password = "Aohc1234!!"
 
 # # Open a cursor to perform database operations
 # cur = con.cursor()
-
-
 
 
 # this allows muliple arguments to be passed without being defined.
@@ -428,86 +430,103 @@ def get_all_values(xpath, printname):
     data_dict = {}
 
     try:
-        WebDriverWait(driver, 1).until(
+        WebDriverWait(driver, .01).until(
             EC.visibility_of_element_located((By.XPATH, xpath)))
         item = driver.find_element(By.XPATH, xpath)
+    except:
+        data_dict[printname] = 'None'
+        print("DID NOT FIND: ", printname)
+        return data_dict
 
-        keyname = printname
+    keyname = printname
 
-        outer_html = item.get_attribute('outerHTML')
-        # print(outer_html)
+    outer_html = item.get_attribute('outerHTML')
+    # print(outer_html)
 
-        if 'type="radio"' in outer_html:
-            data = item.get_attribute('checked')
+    if 'type="radio"' in outer_html:
+        data = item.get_attribute('checked')
 
-            # print("CHECKED1")
-            # print(data)
-            data_dict[keyname] = data
-            return data_dict
+        # print("CHECKED1")
+        # print(data)
+        if data == None:
+            data = 'None'
 
-        if 'class="DrpItems10"' in outer_html:
+        data_dict[keyname] = data
+        return data_dict
 
-            if 'select' in outer_html:
-                try:
-                    select = Select(driver.find_element(
-                        By.XPATH, xpath))  # does find work?
-                    selected_option = select.first_selected_option
-                    data = selected_option.text
-                    # print("FOUND SELECTED1", data)
-                    data_dict[keyname] = data
-                    return data_dict
-                except:
-                    print("passed dropdown")
+    if 'class="DrpItems10"' in outer_html:
 
         if 'select' in outer_html:
+
             try:
                 select = Select(driver.find_element(
                     By.XPATH, xpath))  # does find work?
                 selected_option = select.first_selected_option
                 data = selected_option.text
                 # print("FOUND SELECTED1", data)
+                if data == None:
+                    data = 'None'
+
                 data_dict[keyname] = data
+                print("select returned dict and drpt")
                 return data_dict
             except:
-                pass
-                # print("passed dropdown22")
+                print("passed dropdown")
 
-        data = item.get_attribute('value')
-        # print("FOUND VALUE value")
-        # print(data)
+    if 'select' in outer_html:
+        # try:
 
-        if data == 'on':
-            data = item.get_attribute('checked')
+        select = Select(driver.find_element(
+            By.XPATH, xpath))  # does find work?
+        selected_option = select.first_selected_option
+        data = selected_option.text
+        if data == None:
+            data = 'None'
+        # print("FOUND SELECTED1", data)
+        data_dict[keyname] = data
+        return data_dict
+        # except:
+        #     pass
+        # print("passed dropdown22")
 
-            # print("CHECKED2")
-            # print(data)
-            data_dict[keyname] = data
-            return data_dict
+    data = item.get_attribute('value')
+    # print("FOUND VALUE value")
+    # print(data)
 
-        if data == '':
-            pass
-            # print("passing empty str")
-
-        else:
-            # print("TRYING TO APPEND IT...", keyname)
-            data_dict[keyname] = data
-            return data_dict
-
+    if data == 'on':
         data = item.get_attribute('checked')
 
-        # print("CHECKEDc")
-        # print(data)
-
-        data = item.text
-      
+        print("CHECKED2")
+        print(data)
+        if data == None:
+            data = 'None'
         data_dict[keyname] = data
-
-        # print(" DONE  DONE DONE DONE DONE DONE ")
-        # print("DATA_DICT: ", data_dict)
-
         return data_dict
-    except:
+
+    if data == '':
         pass
+        # print("passing empty str")
+
+    else:
+        print("TRYING TO APPEND IT...", keyname)
+        data_dict[keyname] = data
+        return data_dict
+
+    data = item.get_attribute('checked')
+
+    print("CHECKEDc")
+    print(data)
+
+    data = item.text
+    if data == None:
+        data = 'None'
+
+    data_dict[keyname] = data
+
+    print(" DONE  DONE DONE DONE DONE DONE ")
+    # print("DATA_DICT: ", data_dict)
+
+    return data_dict
 
 
 def get_selected(xpath, print_name):
@@ -743,30 +762,15 @@ def expand_once_comp_opened():  # second one in case first one didn't work
     click(expand_all_ass_tabs)
 
 
-
 ####################### OPEN PY XL ####################################
 ####################################################
-
-import openpyxl
 # so you don't have to manually type it
-from openpyxl.utils import get_column_letter
-from openpyxl.styles import Font  # changing style
-from openpyxl.styles import Alignment  # aligning
-from openpyxl import workbook, load_workbook
 
 
 excel_location = 'C:/Users/johnc/Desktop/Visit Notes QA PROGRAM/QA VISIT NOTES.xlsx'
 wb = load_workbook(excel_location)
 ws = wb.active
 max_row = ws.max_row
-
-###########################################################
-##########################################
-#################################
-
-
-
-
 
 
 #####################################################################################
@@ -801,6 +805,7 @@ def login_hospice():
     # click(patient_list, 8)
 
     search_pt()
+
 
     # print("actions performed")
 login_hospice()
@@ -899,9 +904,6 @@ def check_missing_visits(start_date):
             findings.append("Missing Visit Notes" + dates[4:-13])
             print("FOUND MISSING NOTES AND ADDED TO FINDING")
 
-
-
-
     # ########################### END #################
 
     # name_row = '/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div[*]/div/div[*]/div/table/tbody/tr'
@@ -959,13 +961,12 @@ def check_missing_visits(start_date):
 
 # check_missing_visits(soc)
 
+
         # HAVE IT CONV ASS TO DATETIME IF I NEED IT TO THEN OPEN NEWEST INFO
 # click_most_recent_assessment()
-
 # gather_nurse_ass needs click_most_recent_active
 ###############################################
 ############## XPATH DICTS#######################
-
 toay = str(today)
 assessment_xp_dict = {
     'visit_date': '//*[@id="ctl00_ContentPlaceHolder1_txtHDate"]',
@@ -975,8 +976,12 @@ assessment_xp_dict = {
     'staff_assigned': '//*[@id="ctl00_ContentPlaceHolder1_DropStaffAssigned"]',
     'covid_screen_yes': '//*[@id="ctl00_ContentPlaceHolder1_AssessmentType_2"]',
     'pt_report_pos': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_0"]',
-    'lose_taste': '//*[@id="ctl00_ContentPlaceHolder1_rbCoronaVirus_0"]',
-    'addit_concerns': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
+    'lose_taste_no': '//*[@id="ctl00_ContentPlaceHolder1_rbCoronaVirus_0"]',
+    'lose_taste_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbCoronaVirus_1"]',
+
+    'addit_concerns_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
+    'addit_concerns_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_1"]',
+
     'covid_followed': '//*[@id="ctl00_ContentPlaceHolder1_chkCoronaInstructions"]',
     'utilized_ppe': '//*[@id="ctl00_ContentPlaceHolder1_chkPpe"]',
 
@@ -1019,6 +1024,8 @@ assessment_xp_dict = {
     'fast': '//*[@id="ctl00_ContentPlaceHolder1_FASTList"]',
 
     ### NATURE # CONDITION OF TERMINAL ILLNESS /LCD Eligibility ###
+
+    # DEMENTIA
     'kps_less_70': '//*[@id="ctl00_ContentPlaceHolder1_Dem_7"]',
     'pps_less_70': '//*[@id="ctl00_ContentPlaceHolder1_Dem_8"]',
     'fast_greater_7a': '//*[@id="ctl00_ContentPlaceHolder1_Dem_9"]',
@@ -1033,6 +1040,53 @@ assessment_xp_dict = {
     'decubitis': '//*[@id="ctl00_ContentPlaceHolder1_NC_UDrp"]',
     'recurrent_fever': '//*[@id="ctl00_ContentPlaceHolder1_NC_RDrp"]',
     'weight_loss': '//*[@id="ctl00_ContentPlaceHolder1_NC_WDrp"]',
+
+    # CANCER
+    'reported_hx': '//*[@id="ctl00_ContentPlaceHolder1_NC_Chk1"]',
+    'reported_pt': '//*[@id="ctl00_ContentPlaceHolder1_NC_Chk2"]',
+    'reported_pcg': '//*[@id="ctl00_ContentPlaceHolder1_NC_Chk3"]',
+
+    'hx_er': '//*[@id="ctl00_ContentPlaceHolder1_NC_HxDrp"]',
+    'is_kps_pps_less_70': '//*[@id="ctl00_ContentPlaceHolder1_DRP_IF"]',
+    'dependent_on_two_more_adl': '//*[@id="ctl00_ContentPlaceHolder1_DRP_DA"]',
+
+    # comordities
+    'copd_comorb': '//*[@id="ctl00_ContentPlaceHolder1_CHK_COPD"]',
+    'chf_comorb': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CHF"]',
+    'ischemic_heart_comorb': '//*[@id="ctl00_ContentPlaceHolder1_CHK_IHD"]',
+    'diabetes_mellitus_comorb': '//*[@id="ctl00_ContentPlaceHolder1_CHK_DM"]',
+    'neuro_comorb': '//*[@id="ctl00_ContentPlaceHolder1_CHK_N"]',
+    'renal_failure_comord': '//*[@id="ctl00_ContentPlaceHolder1_CHK_RF"]',
+    'liver_comord': '//*[@id="ctl00_ContentPlaceHolder1_CHK_LD"]',
+    'neoplasia_comord': '//*[@id="ctl00_ContentPlaceHolder1_CHK_NE"]',
+    'aids_comord': '//*[@id="ctl00_ContentPlaceHolder1_CHK_A"]',
+    'dementia_comord': '//*[@id="ctl00_ContentPlaceHolder1_CHK_D"]',
+    'aids/hiv_comord': '//*[@id="ctl00_ContentPlaceHolder1_CHK_AV"]',
+    'refractory_autoimmune_comord': '//*[@id="ctl00_ContentPlaceHolder1_CHK_RSA"]',
+    'lcd_specific_determination': '//*[@id="ctl00_ContentPlaceHolder1_NC_PDDrp"]',
+    'lcd_other': '//*[@id="ctl00_ContentPlaceHolder1_TXT_NA_IL"]',
+
+    # RENAL LCD
+    'ruled_out_renal_transplant': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_RT"]',
+    'not_seeking_dialysis': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_DD"]',
+    'currently_on_dialysis': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_CD"]',
+    'dialysis_for_comfort': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_CO"]',
+    'poor_prognosis_w_dialysis': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_UD"]',
+    'is_creatinine_greater_than_8': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_CC"]',
+    'uremia': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_U"]',
+    'oliguria': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_O"]',
+    'intractable_hyperkalemia_over_7': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_HG"]',
+    'uremic_pericarditis': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_UP"]',
+    'hepatorenal_syndrome': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_HS"]',
+    'intractable_fluid_overload': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_IFO"]',
+    'gfr_less_10': '//*[@id="ctl00_ContentPlaceHolder1_CRNDL_GFR"]',
+
+
+    # ADD ALL OTHER DISEASE NATURE AND CONDITION IF ASSESSING RECERTS AND ASSESSMENTS
+
+
+
+
 
     ### BODY SYSTEM ###
                            ## SYMPTOMS ##
@@ -1489,7 +1543,6 @@ assessment_xp_dict = {
 }
 
 
-
 def gather_nurse_assessment_data():
     print("-------------Gather comp baseline -------------")
     search_pt()
@@ -1508,12 +1561,13 @@ def gather_nurse_assessment_data():
         print("No assessment found")
 
     nurse_assessment_list = []
-    
-    
-    
+
+    current_url = driver.current_url
+    driver.get(current_url)
+    print("got current url", current_url)
+
     # NOW JUST ADD ALL THE OTHER XPS
-    sleep(10)
-    print("sleep 10")
+    # sleep(10)
 
     for key, value in assessment_xp_dict.items():
         # print(key)
@@ -1524,27 +1578,24 @@ def gather_nurse_assessment_data():
 
     # WHERE SHALL I STORE ALL THIS DATA?  HOW CAN I MAKE IT FASTER
 
-    nurse_assessment_list.insert(1,{'visit_type' : "Assessment"})
-    nurse_assessment_list.insert(2,{'date_of_qa' : today})
+    nurse_assessment_list.insert(1, {'visit_type': "Assessment"})
+    nurse_assessment_list.insert(2, {'date_of_qa': today})
     return nurse_assessment_list
 
-
-assessment_list = gather_nurse_assessment_data()
-
+# assessment_list = gather_nurse_assessment_data()
 
 
 def apppend_list_of_dictionary_row(name_list):
-    
+
     key_list = []
     value_list = []
 
     names = wb.get_sheet_names()  # this ones deprecated
     # names = wb.sheetnames()
-     
+
     if pt_name not in names:
         wb.create_sheet(pt_name)
         wb.save(excel_location)
-    
 
     ws = wb[pt_name]
     for dictionary in name_list:
@@ -1557,195 +1608,564 @@ def apppend_list_of_dictionary_row(name_list):
         except:
             pass
 
-    ## I CAN ADD NOT TO ADD IT IF THE DATE OF QA IS DONE ALREADY OR SOMETHING LIKE THAT>
+    # I CAN ADD NOT TO ADD IT IF THE DATE OF QA IS DONE ALREADY OR SOMETHING LIKE THAT>
 
     ws.append(key_list)
     ws.append(value_list)
     wb.save(excel_location)
     print("Added Assessment to Excel")
 
-apppend_list_of_dictionary_row(assessment_list)
+# apppend_list_of_dictionary_row(assessment_list)
 
 
 # def print_important_findings():
-# important_findings_list = []
-# for dictionary in assessment_list:
-#     for key,value in dictionary:
-#         if value == None:
-#             pass
-#         elif value == "":
-#             pass
-#         else:
-#             important_findings_list.append(dictionary)
+    # important_findings_list = []
+    # for dictionary in assessment_list:
+    #     for key,value in dictionary:
+    #         if value == None:
+    #             pass
+    #         elif value == "":
+    #             pass
+    #         else:
+    #             important_findings_list.append(dictionary)
+
+    # print("assessment info")
+
+    # for assessment in assessment_list:
+    #     print(assessment)
+
+    # print("")
+    # print(assessment_list)
+
+    # DO THE SAME BUT COLLECT IT FROM nurse notes
+
+visit_dict_rn = {
+    'visit_date': '//*[@id="ctl00_ContentPlaceHolder1_txtHDate"]',
+    'in_person': '//*[@id="ctl00_ContentPlaceHolder1_Assesscodeid_0"]',
+    'form_type': '//*[@id="ctl00_ContentPlaceHolder1_DrpVisitUnsc"]',
+    # 'recert': '//*[@id="ctl00_ContentPlaceHolder1_AssessmentType_2"]',
+    'staff_assigned': '//*[@id="ctl00_ContentPlaceHolder1_DropStaffAssigned"]',
+    'discipline': '//*[@id="ctl00_ContentPlaceHolder1_DropDiscipline"]',
+    'care_level': '//*[@id="ctl00_ContentPlaceHolder1_DropCareLevel"]',
+
+    'covid_screened_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPriorScreening_0"]',
+    'covid_screened_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPriorScreening_1"]',
 
 
-# print("assessment info")
+    'pt_report_pos_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_0"]',
+    'pt_report_pos_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_1"]',
 
-# for assessment in assessment_list:
-#     print(assessment)
+    'lose_taste': '//*[@id="ctl00_ContentPlaceHolder1_rCoronaVirus_0"]',
+    'addit_concerns': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
+    'covid_followed': '//*[@id="ctl00_ContentPlaceHolder1_chkCoronaInstructions"]',
+    'utilized_ppe': '//*[@id="ctl00_ContentPlaceHolder1_chkPpe"]',
 
-# print("")
-# print(assessment_list)
+    'pain_controlled_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_0"]',
+    'pain_controlled_no': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_1"]',
+    'pain_controlled_n/a': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_3"]',
 
-# DO THE SAME BUT COLLECT IT FROM nurse notes
+    'pain_level_at_visit': '//*[@id="ctl00_ContentPlaceHolder1_DropPainLevel"]',
+    'pain_other_observations': '//*[@id="ctl00_ContentPlaceHolder1_Pain_Comtxt"]',
+
+    # need to add anxiety down to bottom for LVN
+
+
+
+
+
+    'physical_comfort': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PHY"]',
+    'structural_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Str"]',
+    'emotional_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Emo"]',
+    'spiritual_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPI"]',
+    'safety_instructions': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Saf"]',
+    'interpersonal_relationship': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Int"]',
+    'environmental_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Env"]',
+    'self_determination': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SDe"]',
+    'knowledge_related_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Kno"]',
+    'language_comm_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Lan"]',
+    'offered_psychosocial': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PSy"]',
+    'offered_spiritual': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPIR"]',
+    'offered_bereavement': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_BRV"]',
+    'offered_other': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Oth"]',
+    'offered_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtCAP_PHYOther"]',
+
+    'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
+
+}
+
+visit_dict_lvn = {
+    'visit_date': '//*[@id="ctl00_ContentPlaceHolder1_txtHDate"]',
+    'in_person': '//*[@id="ctl00_ContentPlaceHolder1_Assesscodeid_0"]',
+    'form_type': '//*[@id="ctl00_ContentPlaceHolder1_DrpVisitUnsc"]',
+    # 'recert': '//*[@id="ctl00_ContentPlaceHolder1_AssessmentType_2"]',
+    'staff_assigned': '//*[@id="ctl00_ContentPlaceHolder1_DropStaffAssigned"]',
+    'discipline': '//*[@id="ctl00_ContentPlaceHolder1_DropDiscipline"]',
+    'care_level': '//*[@id="ctl00_ContentPlaceHolder1_DropCareLevel"]',
+
+    'covid_screened_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPriorScreening_0"]',
+    'covid_screened_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPriorScreening_1"]',
+
+
+    'pt_report_pos_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_0"]',
+    'pt_report_pos_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_1"]',
+
+    'lose_taste': '//*[@id="ctl00_ContentPlaceHolder1_rCoronaVirus_0"]',
+    'addit_concerns': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
+    'covid_followed': '//*[@id="ctl00_ContentPlaceHolder1_chkCoronaInstructions"]',
+    'utilized_ppe': '//*[@id="ctl00_ContentPlaceHolder1_chkPpe"]',
+
+    'pain_controlled_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_0"]',
+    'pain_controlled_no': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_1"]',
+    'pain_controlled_n/a': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_3"]',
+
+    'pain_level_at_visit': '//*[@id="ctl00_ContentPlaceHolder1_DropPainLevel"]',
+    'pain_other_observations': '//*[@id="ctl00_ContentPlaceHolder1_Pain_Comtxt"]',
+
+    # psychosocial
+    'pt_anxiety_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx1"]',
+    'pt_anxiety_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx2"]',
+    'pt_anxiety_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx3"]',
+    'pt_anxiety_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx4"]',
+
+    # THESE ARE GRAYED OUT WHEN I GOT THIS XP FYI
+    'depression_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Dep1"]',
+    'depression_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Dep2"]',
+    'depression_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Dep3"]',
+    'depression_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Dep4"]',
+
+    'agitation_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_DIZ1"]',
+    'agitation_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_DIZ2"]',
+    'agitation_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_DIZ3"]',
+    'agitation_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_DIZ4"]',
+
+    'confusion_none': '//*[@id="ctl00_ContentPlaceHolder1_RBS_NMS_CON1"]',
+    'confusion_mild': '//*[@id="ctl00_ContentPlaceHolder1_RBS_NMS_CON2"]',
+    'confusion_mod': '//*[@id="ctl00_ContentPlaceHolder1_RBS_NMS_CON3"]',
+    'confusion_sev': '//*[@id="ctl00_ContentPlaceHolder1_RBS_NMS_CON4"]',
+
+    'speech_impair_none': '//*[@id="ctl00_ContentPlaceHolder1_RBS_SI_CON1"]',
+    'speech_impair_mild': '//*[@id="ctl00_ContentPlaceHolder1_RBS_SI_CON2"]',
+    'speech_impair_mod': '//*[@id="ctl00_ContentPlaceHolder1_RBS_SI_CON3"]',
+    'speech_impair_sev': '//*[@id="ctl00_ContentPlaceHolder1_RBS_SI_CON4"]',
+    'speech_impair_txt': '//*[@id="ctl00_ContentPlaceHolder1_NU_SI_txt"]',
+
+    'other_neuro_none:': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_OSY1"]',
+    'other_neuro_:': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_OSY1"]',
+    'other_neuro:': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_OSY1"]',
+    'other_neuro:': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_OSY1"]',
+    'other_neuro_txt:': '//*[@id="ctl00_ContentPlaceHolder1_NU_O_txt"]',
+    'other_obs_neuro': '//*[@id="ctl00_ContentPlaceHolder1_Neu_Comtxt"]',
+
+    'arrhythmia_txt': '//*[@id="ctl00_ContentPlaceHolder1_CP_A"]',
+    'arrhythmia_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_ARR1"]',
+    'arrhythmia_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_ARR2"]',
+    'arrhythmia_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_ARR3"]',
+    'arrhythmia_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_ARR4"]',
+
+    'edema_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_EDM1"]',
+    'edema_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_EDM2"]',
+    'edema_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_EDM3"]',
+    'edema_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_EDM4"]',
+
+    'chest_pain_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_CHP1"]',
+    'chest_pain_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_CHP2"]',
+    'chest_pain_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_CHP3"]',
+    'chest_pain_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_CHP4"]',
+
+    'cardio_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_OSY1"]',
+    'cardio_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_OSY2"]',
+    'cardio_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_OSY3"]',
+    'cardio_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_OSY4"]',
+    'cardio_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_CP_O_txt"]',
+    'cardio_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Car_Comtxt"]',
+
+
+    'infection_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_INF1"]',
+    'infection_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_INF2"]',
+    'infection_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_INF3"]',
+    'infection_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_INF4"]',
+    'infection_txt': '//*[@id="ctl00_ContentPlaceHolder1_In_O_Txt"]',
+
+    'infection_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_II_O_Txt"]',
+    'infection_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_OSY1"]',
+    'infection_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_OSY2"]',
+    'infection_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_OSY3"]',
+    'infection_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_OSY4"]',
+    'infection_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Imm_Comtxt"]',
+
+    'nausea_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_NAU1"]',
+    'nausea_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_NAU2"]',
+    'nausea_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_NAU3"]',
+    'nausea_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_NAU4"]',
+
+    'vomiting_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_VOM1"]',
+    'vomiting_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_VOM2"]',
+    'vomiting_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_VOM3"]',
+    'vomiting_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_VOM4"]',
+
+    'constipation_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_CON1"]',
+    'constipation_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_CON2"]',
+    'constipation_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_CON3"]',
+    'constipation_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_CON4"]',
+
+    'diarrhea_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_DIA1"]',
+    'diarrhea_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_DIA2"]',
+    'diarrhea_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_DIA3"]',
+    'diarrhea_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_DIA4"]',
+
+    'gastro_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OSY1"]',
+    'gastro_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OSY2"]',
+    'gastro_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OSY3"]',
+    'gastro_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OSY4"]',
+    'gastro_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_GI_O_Txt"]',
+    'last_bm': '//*[@id="ctl00_ContentPlaceHolder1_LastBM"]',
+    'incontinent': '//*[@id="ctl00_ContentPlaceHolder1_Gas_STS"]',
+    'gastro_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Gas_Comtxt"]',
+
+    'percent_intake_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OI1"]',
+    'percent_intake_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OI2"]',
+    'percent_intake_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OI3"]',
+    'percent_intake_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OI4"]',
+
+    'nutrition_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NUT_OSY1"]',
+    'nutrition_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_NUT_OSY2"]',
+    'nutrition_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_NUT_OSY3"]',
+    'nutrition_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_NUT_OSY4"]',
+    'nutrition_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_Nut_O_txt"]',
+
+    'artificially_fed_no': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_0"]',
+    'artificially_fed_peg': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_1"]',
+    'artificially_fed_ng': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_2"]',
+    'artificially_fed_jtube': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_3"]',
+    'artificially_fed_pump': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_4"]',
+    'artificially_fed_tpn': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_5"]',
+
+    'artificially_fed_specify': '//*[@id="ctl00_ContentPlaceHolder1_Gas_IFTText"]',
+
+    'diet_type': '//*[@id="ctl00_ContentPlaceHolder1_DrpDietType"]',
+    'diet_specify': '//*[@id="ctl00_ContentPlaceHolder1_Gas_DTPText"]',
+    'diet_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Nut_Comtxt"]',
+
+    'blood_sugar_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_DIA1"]',
+    'blood_sugar_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_DIA2"]',
+    'blood_sugar_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_DIA3"]',
+    'blood_sugar_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_DIA4"]',
+
+    'endocrine_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_OSY1"]',
+    'endocrine_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_OSY2"]',
+    'endocrine_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_OSY3"]',
+    'endocrine_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_OSY4"]',
+    'endocrine_other_symptom': '//*[@id="ctl00_ContentPlaceHolder1_E_O_txt"]',
+    'endocrine_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Endo_Comtxt"]',
+
+    'urinary_problem_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_URP1"]',
+    'urinary_problem_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_URP2"]',
+    'urinary_problem_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_URP3"]',
+    'urinary_problem_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_URP4"]',
+
+    'urinary_other_symptom_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_OSY1"]',
+    'urinary_other_symptom_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_OSY2"]',
+    'urinary_other_symptom_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_OSY3"]',
+    'urinary_other_symptom_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_OSY4"]',
+    'urinary_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_GR_O_Txt"]',
+    'urinary_incontinent': '//*[@id="ctl00_ContentPlaceHolder1_Gen_URCin"]',
+    'urinary_other_obser': '//*[@id="ctl00_ContentPlaceHolder1_Gen_Comtxt"]',
+
+    'insomnia_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_INS1"]',
+    'insomnia_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_INS2"]',
+    'insomnia_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_INS3"]',
+    'insomnia_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_INS4"]',
+
+    'somnolence_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_SOM1"]',
+    'somnolence_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_SOM2"]',
+    'somnolence_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_SOM3"]',
+    'somnolence_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_SOM4"]',
+
+    'sleep_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_OSY1"]',
+    'sleep_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_OSY2"]',
+    'sleep_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_OSY3"]',
+    'sleep_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_OSY4"]',
+    'sleep_other_text': '//*[@id="ctl00_ContentPlaceHolder1_SR_O_txt"]',
+    'sleep_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Sleep_Comtxt"]',
+
+
+
+
+
+
+
+
+    # CONTINUE LVN GATHERING NUTRITION -Safety
+
+
+
+
+
+
+
+
+
+
+
+    # STOP ADDING HERE
+
+    'physical_comfort': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PHY"]',
+    'structural_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Str"]',
+    'emotional_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Emo"]',
+    'spiritual_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPI"]',
+    'safety_instructions': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Saf"]',
+    'interpersonal_relationship': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Int"]',
+    'environmental_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Env"]',
+    'self_determination': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SDe"]',
+    'knowledge_related_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Kno"]',
+    'language_comm_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Lan"]',
+    'offered_psychosocial': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PSy"]',
+    'offered_spiritual': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPIR"]',
+    'offered_bereavement': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_BRV"]',
+    'offered_other': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Oth"]',
+    'offered_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtCAP_PHYOther"]',
+
+    'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
+
+}
+
+visit_dict_sw = {
+    'visit_date': '//*[@id="ctl00_ContentPlaceHolder1_txtHDate"]',
+    'in_person': '//*[@id="ctl00_ContentPlaceHolder1_Assesscodeid_0"]',
+    'form_type': '//*[@id="ctl00_ContentPlaceHolder1_DrpVisitUnsc"]',
+    'chief_complaint': '//*[@id="ctl00_ContentPlaceHolder1_TxtPsgStatesChiefComplaint"]',
+    # 'recert': '//*[@id="ctl00_ContentPlaceHolder1_AssessmentType_2"]',
+    'staff_assigned': '//*[@id="ctl00_ContentPlaceHolder1_DropStaffAssigned"]',
+    'discipline': '//*[@id="ctl00_ContentPlaceHolder1_DropDiscipline"]',
+    'care_level': '//*[@id="ctl00_ContentPlaceHolder1_DropCareLevel"]',
+
+    'covid_screened_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPriorScreening_0"]',
+    'covid_screened_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPriorScreening_1"]',
+
+    'pt_report_pos_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_0"]',
+    'pt_report_pos_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_1"]',
+
+
+    'lose_taste_no': '//*[@id="ctl00_ContentPlaceHolder1_rbCoronaVirus_0"]',
+    'lose_taste_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbCoronaVirus_1"]',
+
+
+    'addit_concerns_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
+    'addit_concerns_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_1"]',
+
+
+    'covid_followed': '//*[@id="ctl00_ContentPlaceHolder1_chkCoronaInstructions"]',
+    'utilized_ppe': '//*[@id="ctl00_ContentPlaceHolder1_chkPpe"]',
+
+    'pain_controlled_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_0"]',
+    'pain_controlled_no': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_1"]',
+    'pain_controlled_n/a': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_3"]',
+
+    'pain_level_at_visit': '//*[@id="ctl00_ContentPlaceHolder1_DropPainLevel"]',
+    'pain_other_observations': '//*[@id="ctl00_ContentPlaceHolder1_Pain_Comtxt"]',
+
+
+
+    # psychosocial
+
+    # ## NEED TO ADD ANXIETY DOWN TO THESE PHYSICAL COMFORT XP
+    'pt_anxiety_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PA1"]',
+    'pt_anxiety_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PA2"]',
+    'pt_anxiety_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PA3"]',
+    'pt_anxiety_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PA4"]',
+
+    'pcg_anxiety_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_GA1"]',
+    'pcg_anxiety_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_GA2"]',
+    'pcg_anxiety_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_GA3"]',
+    'pcg_anxiety_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_GA4"]',
+
+    'distress_rating_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PD1"]',
+    'distress_rating_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PD2"]',
+    'distress_rating_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PD3"]',
+    'distress_rating_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PD4"]',
+
+
+    # NEED TO ADD DOWN TO FAST NYHA
+
+    'physical_comfort': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PHY"]',
+    'structural_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Str"]',
+    'emotional_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Emo"]',
+    'spiritual_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPI"]',
+    'safety_instructions': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Saf"]',
+    'interpersonal_relationship': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Int"]',
+    'environmental_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Env"]',
+    'self_determination': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SDe"]',
+    'knowledge_related_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Kno"]',
+    'language_comm_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Lan"]',
+    'offered_psychosocial': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PSy"]',
+    'offered_spiritual': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPIR"]',
+    'offered_bereavement': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_BRV"]',
+    'offered_other': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Oth"]',
+    'offered_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtCAP_PHYOther"]',
+
+    'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
+}
+
 
 visit_notes_list = []
+
+
 def gather_visit_notes_data():
     open_visit_notes = click('//*[@id="ctl00_TreeView1t30"]')
 
-    visit_notes_page_one = find_elements('//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[*]/td[1]/input')
+    visit_notes_page_one = find_elements(
+        '//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[*]/td[1]/input')
     # num_notes = len(visit_notes_page_one)
     num_notes = 2
     # visit_notes_list = []
     for visit_notes in visit_notes_page_one:
-        
-        visit_note = click(f'//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[{num_notes}]/td[1]/input')
+        print("num_notes", num_notes)
+
+        visit_note = click(
+            f'//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[{num_notes}]/td[1]/input')
         num_notes += 1
 
         expand_all = click('//*[@id="ctl00_ContentPlaceHolder1_ImgExpandAll"]')
-        sleep(10)
-        print("Gathering info")
-        visit_list = []
-        visit_notes_xp_dict = {
-        'visit_date': '//*[@id="ctl00_ContentPlaceHolder1_txtHDate"]',
-        'in_person': '//*[@id="ctl00_ContentPlaceHolder1_Assesscodeid_0"]',
-        # 'recert': '//*[@id="ctl00_ContentPlaceHolder1_AssessmentType_2"]',
-        'staff_assigned': '//*[@id="ctl00_ContentPlaceHolder1_DropStaffAssigned"]',
-        'covid_screen_yes': '//*[@id="ctl00_ContentPlaceHolder1_AssessmentType_2"]',
-        'pt_report_pos': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_0"]',
-        'lose_taste': '//*[@id="ctl00_ContentPlaceHolder1_rbCoronaVirus_0"]',
-        'addit_concerns': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
-        'covid_followed': '//*[@id="ctl00_ContentPlaceHolder1_chkCoronaInstructions"]',
-        'utilized_ppe': '//*[@id="ctl00_ContentPlaceHolder1_chkPpe"]',
 
-        'pain_controlled_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_0"]',
-        'pain_controlled_no' : '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_1"]',
-        'pain_controlled_n/a': '//*[@id="ctl00_ContentPlaceHolder1_RbControlled_3"]',
+        current_url = driver.current_url
+        driver.get(current_url)
 
-        'pain_level_at_visit' : '//*[@id="ctl00_ContentPlaceHolder1_DropPainLevel"]',
-        'pain_other_observations': '//*[@id="ctl00_ContentPlaceHolder1_Pain_Comtxt"]',
+        print("got current url", current_url)
 
-        #psychosocial
-        'pt_anxiety_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PA1"]',
-        'pt_anxiety_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PA2"]',
-        'pt_anxiety_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PA3"]',
-        'pt_anxiety_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PA4"]',
+        discipline = get_selected(
+            '//*[@id="ctl00_ContentPlaceHolder1_DropDiscipline"]', 'discipline')
+        print('discipline: ', discipline)
 
-        'pcg_anxiety_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_GA1"]',
-        'pcg_anxiety_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_GA2"]',
-        'pcg_anxiety_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_GA3"]',
-        'pcg_anxiety_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_GA4"]',
+        if discipline == 'BSW' or discipline == 'MSW':
+            print("Gathering info")
+            visit_list = []
 
-        'distress_rating_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PD1"]',
-        'distress_rating_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PD2"]',
-        'distress_rating_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PD3"]',
-        'distress_rating_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_PSY_PD4"]',
+            for key, value in visit_dict_sw.items():
+                assessment_dict = get_all_values(value, key)
 
-        'physical_comfort': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PHY"]',
-        'structural_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Str"]',
-        'emotional_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Emo"]',
-        'spiritual_support': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPI"]',
-        'safety_instructions': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Saf"]',
-        'interpersonal_relationship': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Int"]',
-        'environmental_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Env"]',
-        'self_determination': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SDe"]',
-        'knowledge_related_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Kno"]',
-        'language_comm_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Lan"]',
-        'offered_psychosocial': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PSy"]',
-        'offered_spiritual': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPIR"]',
-        'offered_bereavement': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_BRV"]',
-        'offered_other': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Oth"]',
-        'offered_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtCAP_PHYOther"]',
+                visit_list.append(assessment_dict)
+                print('added_dict')
 
-        'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
+        if discipline == 'LVN':
+            print("Gathering LVN info")
+            visit_list = []
 
-        }
+            for key, value in visit_dict_lvn.items():
+                assessment_dict = get_all_values(value, key)
 
-        for key, value in visit_notes_xp_dict.items():
-            # print(key)
+                visit_list.append(assessment_dict)
+                print('added_dict')
 
-            # print(value)
-            assessment_dict = get_all_values(value, key)
+        else:  # I CAN ADD MORE IFS FOR OTHER DISCIPLINES
 
+            print("Gathering info")
+            visit_list = []
 
-            visit_list.append(assessment_dict)
+            for key, value in visit_dict_rn.items():
+                assessment_dict = get_all_values(value, key)
+                visit_list.append(assessment_dict)
+                print('added_dict')
 
+        visit_list.insert(1, {'visit_type': "Visit"})  # THIS WAS FORWARD ONE
+        visit_list.insert(2, {'date_of_qa': str(today)}
+                          )  # THIS WAS FORWARD ONE
 
-        visit_list.insert(1,{'visit_type' : "Visit"})  # THIS WAS FORWARD ONE
-        visit_list.insert(2,{'date_of_qa' : today})# THIS WAS FORWARD ONE
+        print("visit_list:", visit_list)
+        f = open('practice.txt', 'w')
+        f.write(str(visit_list))
+        f.close()
+        print("sleep")
+        sleep(9999)
+        ### ADD RATIONALE HERE ###
 
         visit_notes_list.append(visit_list)
 
         print("Reopening visit notes to gather info.")
         open_visit_notes = click('//*[@id="ctl00_TreeView1t30"]')
 
-
     return visit_notes_list
+
 
 visit_notes_list = gather_visit_notes_data()
 
 for visit in visit_notes_list:
     apppend_list_of_dictionary_row(visit)
 
-print(len(visit_notes_list))
+
+# DONT THINK I NEED THIS>>>
+# NEEDED TO CLEAN THE OUTPUT FOR PARSING THROUGH IT
+# visit_data_cleaned_list = []
+# for visit_list in visit_notes_list:
+#     eachvisit_list = []
+#     for dictionary in visit_list:
+
+#         try:
+#             for key, value in dictionary.items():
+#                 if value is not None:
+#                     if value != '':
+#                         clean_dict = {}
+#                         add_dict = clean_dict[key] = value
+#                         eachvisit_list.append(add_dict)
+#         except:
+#             pass
+
+#     visit_data_cleaned_list.append(eachvisit_list)
+
+
 print("done adding visit lists")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 idg_notes_list = []
+
+
 def get_idg_data():
 
     idg = click('//*[@id="ctl00_TreeView1t15"]')
-    idgs = find_elements('//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[*]/td[1]/input')
+    idgs = find_elements(
+        '//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[*]/td[1]/input')
     num_notes = 2
     # visit_notes_list = []
     for idg in idgs:
-        if num_notes <= 5:  #limiting it to first 3 idg
-            idg_note = click(f'//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[{num_notes}]/td[1]/input')
+        if num_notes <= 5:  # limiting it to first 3 idg
+            idg_note = click(
+                f'//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[{num_notes}]/td[1]/input')
             num_notes += 1
 
-            expand_idg_discussion = click('//*[@id="ctl00_ContentPlaceHolder1_ImgPnlComment"]')
+            expand_idg_discussion = click(
+                '//*[@id="ctl00_ContentPlaceHolder1_ImgPnlComment"]')
+            current_url = driver.current_url
+            driver.get(current_url)
+            print("got current url", current_url)
 
-            sleep(10)
+            # sleep(10)
             idg_list = []
 
             idg_notes_xp_dict = {
-            'visit_date': '//*[@id="ctl00_ContentPlaceHolder1_txtHDate"]',
-            'nursing_disc': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
-            'spiritual_disc': '//*[@id="ctl00_ContentPlaceHolder1_TxtCommentsSPC"]',
-            'psychosocial_disc': '//*[@id="ctl00_ContentPlaceHolder1_TxtCommentsPSY"]',
-            'physician_disc': '//*[@id="ctl00_ContentPlaceHolder1_TxtCommentsOTH"]',
-            'primary_dx': '//*[@id="ctl00_ContentPlaceHolder1_PrimaryDx"]',
-            'primary_disease': '//*[@id="ctl00_ContentPlaceHolder1_DrpPDDisease0"]',
-            'level_of_care': '//*[@id="ctl00_ContentPlaceHolder1_lblLevelOfCare"]',
-            'frequency_of_visit': '//*[@id="ctl00_ContentPlaceHolder1_lblFrequencyOfVisit"]',
-            'staff_assignment': '//*[@id="ctl00_ContentPlaceHolder1_lblStaffAssignment"]',
-            'sign1': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureMD"]',
-            'sign2': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureMSW"]',
-            'sign3': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignaturePCP"]',
-            'sign4': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureRN"]',
-            'sign5': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureChaplain"]',
+                'visit_date': '//*[@id="ctl00_ContentPlaceHolder1_txtHDate"]',
+                'nursing_disc': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
+                'spiritual_disc': '//*[@id="ctl00_ContentPlaceHolder1_TxtCommentsSPC"]',
+                'psychosocial_disc': '//*[@id="ctl00_ContentPlaceHolder1_TxtCommentsPSY"]',
+                'physician_disc': '//*[@id="ctl00_ContentPlaceHolder1_TxtCommentsOTH"]',
+                'primary_dx': '//*[@id="ctl00_ContentPlaceHolder1_PrimaryDx"]',
+                'primary_disease': '//*[@id="ctl00_ContentPlaceHolder1_DrpPDDisease0"]',
+                'level_of_care': '//*[@id="ctl00_ContentPlaceHolder1_lblLevelOfCare"]',
+                'frequency_of_visit': '//*[@id="ctl00_ContentPlaceHolder1_lblFrequencyOfVisit"]',
+                'staff_assignment': '//*[@id="ctl00_ContentPlaceHolder1_lblStaffAssignment"]',
+                'sign1': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureMD"]',
+                'sign2': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureMSW"]',
+                'sign3': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignaturePCP"]',
+                'sign4': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureRN"]',
+                'sign5': '//*[@id="ctl00_ContentPlaceHolder1_BtnSignatureChaplain"]',
             }
 
             for key, value in idg_notes_xp_dict.items():
-               
+
                 idg_dict = get_all_values(value, key)
                 idg_list.append(idg_dict)
 
-
-            idg_list.insert(1,{'visit_type' : "IDG"})  # THIS WAS FORWARD ONE
-            idg_list.insert(2,{'date_of_qa' : today})# THIS WAS FORWARD ONE
+            idg_list.insert(1, {'visit_type': "IDG"})  # THIS WAS FORWARD ONE
+            # THIS WAS FORWARD ONE
+            idg_list.insert(2, {'date_of_qa': str(today)})
 
             idg_notes_list.append(idg_list)
 
@@ -1755,43 +2175,33 @@ def get_idg_data():
     return idg_notes_list
 
 
-idg_notes_list = get_idg_data()
+# idg_notes_list = get_idg_data()
 
 for idg in idg_notes_list:
     apppend_list_of_dictionary_row(idg)
 
 
+f = open('visit_note_list.txt', 'w')
+f.write(str(visit_notes_list))
+for i in range(3):
+    f.write('')
 
 
+for visit in visit_notes_list:
+    f.write(str(visit))
+
+f.close()
 
 
+print("NEED TO ADD ALL XPATHS FOR LVN IN DICT.. then add RN, BSW, etc,,## Then go back to practice.py and impliment new functions and add more")
+
+# Then go back to practice.py and impliment new functions and add more
 
 
+##########################################
+########### NOTES TO FIX LATER ############
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# have it search dicts based on the discipline of visit note to save tons of time
 
 
 #### COLLECT COMP OR RECERT BASELINE ####
