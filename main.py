@@ -1656,7 +1656,8 @@ visit_dict_rn = {
     'pt_report_pos_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_1"]',
 
     'lose_taste': '//*[@id="ctl00_ContentPlaceHolder1_rCoronaVirus_0"]',
-    'addit_concerns': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
+    'addit_concerns_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
+    'addit_concerns_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_1"]',
     'covid_followed': '//*[@id="ctl00_ContentPlaceHolder1_chkCoronaInstructions"]',
     'utilized_ppe': '//*[@id="ctl00_ContentPlaceHolder1_chkPpe"]',
 
@@ -1667,10 +1668,289 @@ visit_dict_rn = {
     'pain_level_at_visit': '//*[@id="ctl00_ContentPlaceHolder1_DropPainLevel"]',
     'pain_other_observations': '//*[@id="ctl00_ContentPlaceHolder1_Pain_Comtxt"]',
 
+    'temp': '//*[@id="ctl00_ContentPlaceHolder1_txtTemp"]',
+    'pulse': '//*[@id="ctl00_ContentPlaceHolder1_TxtPulse"]',
+    'resp': '//*[@id="ctl00_ContentPlaceHolder1_TxtResp"]',
+    'bp': '//*[@id="ctl00_ContentPlaceHolder1_TxtBp"]',
+    'bp_sit': '//*[@id="ctl00_ContentPlaceHolder1_RBbpPosition_0"]',
+    'bp_lying': '//*[@id="ctl00_ContentPlaceHolder1_RBbpPosition_1"]',
+    'bp_standing': '//*[@id="ctl00_ContentPlaceHolder1_RBbpPosition_2"]',
+    'height': '//*[@id="ctl00_ContentPlaceHolder1_TxtHt"]',
+    'weight': '//*[@id="ctl00_ContentPlaceHolder1_TxtWt"]',
+    'mac': '//*[@id="ctl00_ContentPlaceHolder1_TxtMac"]',
+    'mac_left': '//*[@id="ctl00_ContentPlaceHolder1_RBMacPosition_0"]',
+    'mac_right': '//*[@id="ctl00_ContentPlaceHolder1_RBMacPosition_1"]',
+    'bmi': '//*[@id="ctl00_ContentPlaceHolder1_TxtBmi"]',
+    'vitals_other_obs_txt': '//*[@id="ctl00_ContentPlaceHolder1_Vital_Comtxt"]',
+
+
+    # psychosocial
+    'pt_anxiety_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx1"]',
+    'pt_anxiety_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx2"]',
+    'pt_anxiety_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx3"]',
+    'pt_anxiety_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx4"]',
+
+    # THESE ARE GRAYED OUT WHEN I GOT THIS XP FYI
+    'depression_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Dep1"]',
+    'depression_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Dep2"]',
+    'depression_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Dep3"]',
+    'depression_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Dep4"]',
+
+    'agitation_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_DIZ1"]',
+    'agitation_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_DIZ2"]',
+    'agitation_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_DIZ3"]',
+    'agitation_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_DIZ4"]',
+
+    'confusion_none': '//*[@id="ctl00_ContentPlaceHolder1_RBS_NMS_CON1"]',
+    'confusion_mild': '//*[@id="ctl00_ContentPlaceHolder1_RBS_NMS_CON2"]',
+    'confusion_mod': '//*[@id="ctl00_ContentPlaceHolder1_RBS_NMS_CON3"]',
+    'confusion_sev': '//*[@id="ctl00_ContentPlaceHolder1_RBS_NMS_CON4"]',
+
+    'speech_impair_none': '//*[@id="ctl00_ContentPlaceHolder1_RBS_SI_CON1"]',
+    'speech_impair_mild': '//*[@id="ctl00_ContentPlaceHolder1_RBS_SI_CON2"]',
+    'speech_impair_mod': '//*[@id="ctl00_ContentPlaceHolder1_RBS_SI_CON3"]',
+    'speech_impair_sev': '//*[@id="ctl00_ContentPlaceHolder1_RBS_SI_CON4"]',
+    'speech_impair_txt': '//*[@id="ctl00_ContentPlaceHolder1_NU_SI_txt"]',
+
+    'other_neuro_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_OSY1"]',
+    'other_neuro_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_OSY2"]',
+    'other_neuro_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_OSY3"]',
+    'other_neuro_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_OSY4"]',
+    'other_neuro_txt': '//*[@id="ctl00_ContentPlaceHolder1_NU_O_txt"]',
+    'other_obs_neuro': '//*[@id="ctl00_ContentPlaceHolder1_Neu_Comtxt"]',
+
+    'arrhythmia_txt': '//*[@id="ctl00_ContentPlaceHolder1_CP_A"]',
+    'arrhythmia_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_ARR1"]',
+    'arrhythmia_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_ARR2"]',
+    'arrhythmia_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_ARR3"]',
+    'arrhythmia_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_ARR4"]',
+
+    'edema_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_EDM1"]',
+    'edema_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_EDM2"]',
+    'edema_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_EDM3"]',
+    'edema_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_EDM4"]',
+
+    'chest_pain_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_CHP1"]',
+    'chest_pain_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_CHP2"]',
+    'chest_pain_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_CHP3"]',
+    'chest_pain_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_CHP4"]',
+
+    'cardio_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_OSY1"]',
+    'cardio_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_OSY2"]',
+    'cardio_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_OSY3"]',
+    'cardio_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_CAR_OSY4"]',
+    'cardio_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_CP_O_txt"]',
+    'cardio_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Car_Comtxt"]',
+
+
+    'infection_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_INF1"]',
+    'infection_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_INF2"]',
+    'infection_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_INF3"]',
+    'infection_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_INF4"]',
+    'infection_txt': '//*[@id="ctl00_ContentPlaceHolder1_In_O_Txt"]',
+
+    'infection_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_II_O_Txt"]',
+    'infection_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_OSY1"]',
+    'infection_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_OSY2"]',
+    'infection_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_OSY3"]',
+    'infection_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_IMG_OSY4"]',
+    'infection_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Imm_Comtxt"]',
+
+    'nausea_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_NAU1"]',
+    'nausea_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_NAU2"]',
+    'nausea_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_NAU3"]',
+    'nausea_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_NAU4"]',
+
+    'vomiting_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_VOM1"]',
+    'vomiting_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_VOM2"]',
+    'vomiting_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_VOM3"]',
+    'vomiting_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_VOM4"]',
+
+    'constipation_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_CON1"]',
+    'constipation_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_CON2"]',
+    'constipation_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_CON3"]',
+    'constipation_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_CON4"]',
+
+    'diarrhea_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_DIA1"]',
+    'diarrhea_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_DIA2"]',
+    'diarrhea_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_DIA3"]',
+    'diarrhea_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_DIA4"]',
+
+    'gastro_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OSY1"]',
+    'gastro_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OSY2"]',
+    'gastro_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OSY3"]',
+    'gastro_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OSY4"]',
+    'gastro_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_GI_O_Txt"]',
+    'last_bm': '//*[@id="ctl00_ContentPlaceHolder1_LastBM"]',
+    'incontinent': '//*[@id="ctl00_ContentPlaceHolder1_Gas_STS"]',
+    'gastro_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Gas_Comtxt"]',
+
+    'percent_intake_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OI1"]',
+    'percent_intake_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OI2"]',
+    'percent_intake_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OI3"]',
+    'percent_intake_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GAS_OI4"]',
+
+    'nutrition_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NUT_OSY1"]',
+    'nutrition_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_NUT_OSY2"]',
+    'nutrition_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_NUT_OSY3"]',
+    'nutrition_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_NUT_OSY4"]',
+    'nutrition_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_Nut_O_txt"]',
+
+    'artificially_fed_no': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_0"]',
+    'artificially_fed_peg': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_1"]',
+    'artificially_fed_ng': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_2"]',
+    'artificially_fed_jtube': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_3"]',
+    'artificially_fed_pump': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_4"]',
+    'artificially_fed_tpn': '//*[@id="ctl00_ContentPlaceHolder1_Gas_AFF_5"]',
+
+    'artificially_fed_specify': '//*[@id="ctl00_ContentPlaceHolder1_Gas_IFTText"]',
+
+    'diet_type': '//*[@id="ctl00_ContentPlaceHolder1_DrpDietType"]',
+    'diet_specify': '//*[@id="ctl00_ContentPlaceHolder1_Gas_DTPText"]',
+    'diet_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Nut_Comtxt"]',
+
+    'blood_sugar_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_DIA1"]',
+    'blood_sugar_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_DIA2"]',
+    'blood_sugar_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_DIA3"]',
+    'blood_sugar_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_DIA4"]',
+
+    'endocrine_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_OSY1"]',
+    'endocrine_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_OSY2"]',
+    'endocrine_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_OSY3"]',
+    'endocrine_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_IND_OSY4"]',
+    'endocrine_other_symptom': '//*[@id="ctl00_ContentPlaceHolder1_E_O_txt"]',
+    'endocrine_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Endo_Comtxt"]',
+
+    'urinary_problem_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_URP1"]',
+    'urinary_problem_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_URP2"]',
+    'urinary_problem_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_URP3"]',
+    'urinary_problem_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_URP4"]',
+
+    'urinary_other_symptom_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_OSY1"]',
+    'urinary_other_symptom_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_OSY2"]',
+    'urinary_other_symptom_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_OSY3"]',
+    'urinary_other_symptom_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_GEN_OSY4"]',
+    'urinary_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_GR_O_Txt"]',
+    'urinary_incontinent': '//*[@id="ctl00_ContentPlaceHolder1_Gen_URCin"]',
+    'urinary_other_obser': '//*[@id="ctl00_ContentPlaceHolder1_Gen_Comtxt"]',
+
+    'insomnia_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_INS1"]',
+    'insomnia_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_INS2"]',
+    'insomnia_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_INS3"]',
+    'insomnia_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_INS4"]',
+
+    'somnolence_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_SOM1"]',
+    'somnolence_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_SOM2"]',
+    'somnolence_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_SOM3"]',
+    'somnolence_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_SOM4"]',
+
+    'sleep_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_OSY1"]',
+    'sleep_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_OSY2"]',
+    'sleep_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_OSY3"]',
+    'sleep_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_OSY4"]',
+    'sleep_other_text': '//*[@id="ctl00_ContentPlaceHolder1_SR_O_txt"]',
+    'sleep_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Sleep_Comtxt"]',
+
+    'muskulo_weakness_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_WKN1"]',
+    'muskulo_weakness_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_WKN2"]',
+    'muskulo_weakness_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_WKN3"]',
+    'muskulo_weakness_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_WKN4"]',
+
+    'muskulo_contracture_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_CON1"]',
+    'muskulo_contracture_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_CON2"]',
+    'muskulo_contracture_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_CON3"]',
+    'muskulo_contracture_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_CON4"]',
+
+    'muskulo_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_M_O_txt"]',
+    'muskulo_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_OSY1"]',
+    'muskulo_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_OSY2"]',
+    'muskulo_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_OSY3"]',
+    'muskulo_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_OSY4"]',
+
+    'muskulo_other_obs_txt': '//*[@id="ctl00_ContentPlaceHolder1_Musc_Comtxt"]',
+
+    'rash_txt': '//*[@id="ctl00_ContentPlaceHolder1_ISW_R_Txt"]',
+    'rash_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_PRU1"]',
+    'rash_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_PRU2"]',
+    'rash_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_PRU3"]',
+    'rash_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_PRU4"]',
+
+    'wound_txt': '//*[@id="ctl00_ContentPlaceHolder1_ISW_O_txt"]',
+    'wound_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_WND1"]',
+    'wound_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_WND2"]',
+    'wound_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_WND3"]',
+    'wound_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_WND4"]',
+
+    'ulcer_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_ULC1"]',
+    'ulcer_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_ULC2"]',
+    'ulcer_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_ULC3"]',
+    'ulcer_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_ULC4"]',
+
+    'other_skin_symptom': '//*[@id="ctl00_ContentPlaceHolder1_IS_O_txt"]',
+    'other_skin_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_OSY1"]',
+    'other_skin_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_OSY2"]',
+    'other_skin_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_OSY3"]',
+    'other_skin_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_OSY4"]',
+    'skin_other_obs_txt': '//*[@id="ctl00_ContentPlaceHolder1_Int_Comtxt"]',
+
+    'ambulatory': '//*[@id="ctl00_ContentPlaceHolder1_RAD_CEMO_AN"]',
+    'ambu_max_assist': '//*[@id="ctl00_ContentPlaceHolder1_Chk_CEMO_MX"]',
+
+    'non_ambulatory': '//*[@id="ctl00_ContentPlaceHolder1_RAD_CEMO_AN1"]',
+    'bedbound': '//*[@id="ctl00_ContentPlaceHolder1_ChK_CEMO_BB"]',
+    'non_ambu_max_assist': '//*[@id="ctl00_ContentPlaceHolder1_Chk_CEMO_MXA"]',
+    'mobility_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Mob_Comtxt"]',
+
+    ### ADL ASSESSMENT ###
+    'ambulation': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_A"]',
+    'toileting': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_C"]',
+    'transfer': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_T"]',
+    'dressing': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_D"]',
+    'feeding': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_F"]',
+    'bathing': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_B"]',
+    'total_adl': '//*[@id="ctl00_ContentPlaceHolder1_TotalADL"]',
+    'adl_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Adl_Comtxt"]',
+
+    'imminently_dying_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Dy_Comtxt"]',
+    'any_fall_yes': '//*[@id="ctl00_ContentPlaceHolder1_Env_FRA_0"]',
+    'any_fall_no': '//*[@id="ctl00_ContentPlaceHolder1_Env_FRA_1"]',
+    'fall_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Fall_Comtxt"]',
+
+    'change_in_safety_yes': '//*[@id="ctl00_ContentPlaceHolder1_Env_SAFA_0"]',
+    'change_in_safety_no': '//*[@id="ctl00_ContentPlaceHolder1_Env_SAFA_1"]',
+    'safety_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Saf_Comtxt"]',
+
+    # visit checklist
+    'update_family_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC1_0"]',
+    'update_family_no': '//*[@id="ctl00_ContentPlaceHolder1_RbVC1_1"]',
+
+    'update_cm_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC2_0"]',
+    'update_cm_no': '//*[@id="ctl00_ContentPlaceHolder1_RbVC2_1"]',
+
+    'comfort_pack_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC3_0"]',
+    'comfort_pack_need': '//*[@id="ctl00_ContentPlaceHolder1_RbVC3_1"]',
+    
+    'dme_inspected_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC4_0"]',
+    'dme_inspected_faulty': '//*[@id="ctl00_ContentPlaceHolder1_RbVC4_1"]',
+
+    'check_foley_yes': '//*[@id="ctl00_ContentPlaceHolder1_RBVC6_0"]',
+    'check_foley_no': '//*[@id="ctl00_ContentPlaceHolder1_RBVC6_1"]',
+    'check_foley_n/a': '//*[@id="ctl00_ContentPlaceHolder1_RBVC6_2"]',
+
+    'check_gi_tube_yes': '//*[@id="ctl00_ContentPlaceHolder1_RBVC7_0"]',
+    'check_gi_tube_no': '//*[@id="ctl00_ContentPlaceHolder1_RBVC7_1"]',
+    'check_gi_tube_n/a': '//*[@id="ctl00_ContentPlaceHolder1_RBVC7_2"]',
+
+    'confirmed_sched_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC5_0"]',
+    'confirmed_sched_request_change': '//*[@id="ctl00_ContentPlaceHolder1_RbVC5_1"]',
     # need to add anxiety down to bottom for LVN
 
 
 
+    'kps': '//*[@id="ctl00_ContentPlaceHolder1_DDKPS"]',
+    'pps': '//*[@id="ctl00_ContentPlaceHolder1_DDPPS"]',
+    'fast': '//*[@id="ctl00_ContentPlaceHolder1_DDFast"]',
+    'nyha': '//*[@id="ctl00_ContentPlaceHolder1_DDNYHA"]',
 
 
     'physical_comfort': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PHY"]',
@@ -1683,11 +1963,7 @@ visit_dict_rn = {
     'self_determination': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SDe"]',
     'knowledge_related_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Kno"]',
     'language_comm_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Lan"]',
-    'offered_psychosocial': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PSy"]',
-    'offered_spiritual': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPIR"]',
-    'offered_bereavement': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_BRV"]',
-    'offered_other': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Oth"]',
-    'offered_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtCAP_PHYOther"]',
+
 
     'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
 
@@ -1710,7 +1986,8 @@ visit_dict_lvn = {
     'pt_report_pos_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPositive_1"]',
 
     'lose_taste': '//*[@id="ctl00_ContentPlaceHolder1_rCoronaVirus_0"]',
-    'addit_concerns': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
+    'addit_concerns_no': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_0"]',
+    'addit_concerns_yes': '//*[@id="ctl00_ContentPlaceHolder1_rbPatientPcgVisit_1"]',
     'covid_followed': '//*[@id="ctl00_ContentPlaceHolder1_chkCoronaInstructions"]',
     'utilized_ppe': '//*[@id="ctl00_ContentPlaceHolder1_chkPpe"]',
 
@@ -1720,6 +1997,23 @@ visit_dict_lvn = {
 
     'pain_level_at_visit': '//*[@id="ctl00_ContentPlaceHolder1_DropPainLevel"]',
     'pain_other_observations': '//*[@id="ctl00_ContentPlaceHolder1_Pain_Comtxt"]',
+
+    'temp': '//*[@id="ctl00_ContentPlaceHolder1_txtTemp"]',
+    'pulse': '//*[@id="ctl00_ContentPlaceHolder1_TxtPulse"]',
+    'resp': '//*[@id="ctl00_ContentPlaceHolder1_TxtResp"]',
+    'bp': '//*[@id="ctl00_ContentPlaceHolder1_TxtBp"]',
+    'bp_sit': '//*[@id="ctl00_ContentPlaceHolder1_RBbpPosition_0"]',
+    'bp_lying': '//*[@id="ctl00_ContentPlaceHolder1_RBbpPosition_1"]',
+    'bp_standing': '//*[@id="ctl00_ContentPlaceHolder1_RBbpPosition_2"]',
+    'height': '//*[@id="ctl00_ContentPlaceHolder1_TxtHt"]',
+    'weight': '//*[@id="ctl00_ContentPlaceHolder1_TxtWt"]',
+    'mac': '//*[@id="ctl00_ContentPlaceHolder1_TxtMac"]',
+    'mac_left': '//*[@id="ctl00_ContentPlaceHolder1_RBMacPosition_0"]',
+    'mac_right': '//*[@id="ctl00_ContentPlaceHolder1_RBMacPosition_1"]',
+    'bmi': '//*[@id="ctl00_ContentPlaceHolder1_TxtBmi"]',
+    'vitals_other_obs_txt': '//*[@id="ctl00_ContentPlaceHolder1_Vital_Comtxt"]',
+
+
 
     # psychosocial
     'pt_anxiety_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx1"]',
@@ -1888,23 +2182,99 @@ visit_dict_lvn = {
     'sleep_other_text': '//*[@id="ctl00_ContentPlaceHolder1_SR_O_txt"]',
     'sleep_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Sleep_Comtxt"]',
 
+    'muskulo_weakness_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_WKN1"]',
+    'muskulo_weakness_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_WKN2"]',
+    'muskulo_weakness_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_WKN3"]',
+    'muskulo_weakness_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_WKN4"]',
 
+    'muskulo_contracture_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_CON1"]',
+    'muskulo_contracture_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_CON2"]',
+    'muskulo_contracture_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_CON3"]',
+    'muskulo_contracture_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_CON4"]',
 
+    'muskulo_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_M_O_txt"]',
+    'muskulo_other_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_OSY1"]',
+    'muskulo_other_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_OSY2"]',
+    'muskulo_other_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_OSY3"]',
+    'muskulo_other_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_MUS_OSY4"]',
 
+    'muskulo_other_obs_txt': '//*[@id="ctl00_ContentPlaceHolder1_Musc_Comtxt"]',
 
+    'rash_txt': '//*[@id="ctl00_ContentPlaceHolder1_ISW_R_Txt"]',
+    'rash_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_PRU1"]',
+    'rash_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_PRU2"]',
+    'rash_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_PRU3"]',
+    'rash_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_PRU4"]',
 
+    'wound_txt': '//*[@id="ctl00_ContentPlaceHolder1_ISW_O_txt"]',
+    'wound_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_WND1"]',
+    'wound_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_WND2"]',
+    'wound_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_WND3"]',
+    'wound_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_WND4"]',
 
+    'ulcer_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_ULC1"]',
+    'ulcer_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_ULC2"]',
+    'ulcer_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_ULC3"]',
+    'ulcer_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_ULC4"]',
 
-    # CONTINUE LVN GATHERING NUTRITION -Safety
+    'other_skin_symptom': '//*[@id="ctl00_ContentPlaceHolder1_IS_O_txt"]',
+    'other_skin_none': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_OSY1"]',
+    'other_skin_mild': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_OSY2"]',
+    'other_skin_mod': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_OSY3"]',
+    'other_skin_sev': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_OSY4"]',
+    'skin_other_obs_txt': '//*[@id="ctl00_ContentPlaceHolder1_Int_Comtxt"]',
 
+    'ambulatory': '//*[@id="ctl00_ContentPlaceHolder1_RAD_CEMO_AN"]',
+    'ambu_max_assist': '//*[@id="ctl00_ContentPlaceHolder1_Chk_CEMO_MX"]',
 
+    'non_ambulatory': '//*[@id="ctl00_ContentPlaceHolder1_RAD_CEMO_AN1"]',
+    'bedbound': '//*[@id="ctl00_ContentPlaceHolder1_ChK_CEMO_BB"]',
+    'non_ambu_max_assist': '//*[@id="ctl00_ContentPlaceHolder1_Chk_CEMO_MXA"]',
+    'mobility_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Mob_Comtxt"]',
 
+    ### ADL ASSESSMENT ###
+    'ambulation': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_A"]',
+    'toileting': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_C"]',
+    'transfer': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_T"]',
+    'dressing': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_D"]',
+    'feeding': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_F"]',
+    'bathing': '//*[@id="ctl00_ContentPlaceHolder1_DRP_CEAD_B"]',
+    'total_adl': '//*[@id="ctl00_ContentPlaceHolder1_TotalADL"]',
+    'adl_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Adl_Comtxt"]',
 
+    'imminently_dying_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Dy_Comtxt"]',
+    'any_fall_yes': '//*[@id="ctl00_ContentPlaceHolder1_Env_FRA_0"]',
+    'any_fall_no': '//*[@id="ctl00_ContentPlaceHolder1_Env_FRA_1"]',
+    'fall_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Fall_Comtxt"]',
 
+    'change_in_safety_yes': '//*[@id="ctl00_ContentPlaceHolder1_Env_SAFA_0"]',
+    'change_in_safety_no': '//*[@id="ctl00_ContentPlaceHolder1_Env_SAFA_1"]',
+    'safety_other_obs': '//*[@id="ctl00_ContentPlaceHolder1_Saf_Comtxt"]',
 
+    # visit checklist
+    'update_family_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC1_0"]',
+    'update_family_no': '//*[@id="ctl00_ContentPlaceHolder1_RbVC1_1"]',
 
+    'update_cm_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC2_0"]',
+    'update_cm_no': '//*[@id="ctl00_ContentPlaceHolder1_RbVC2_1"]',
 
+    'comfort_pack_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC3_0"]',
+    'comfort_pack_need': '//*[@id="ctl00_ContentPlaceHolder1_RbVC3_1"]',
+    
+    'dme_inspected_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC4_0"]',
+    'dme_inspected_faulty': '//*[@id="ctl00_ContentPlaceHolder1_RbVC4_1"]',
 
+    'check_foley_yes': '//*[@id="ctl00_ContentPlaceHolder1_RBVC6_0"]',
+    'check_foley_no': '//*[@id="ctl00_ContentPlaceHolder1_RBVC6_1"]',
+    'check_foley_n/a': '//*[@id="ctl00_ContentPlaceHolder1_RBVC6_2"]',
+
+   
+    'check_gi_tube_yes': '//*[@id="ctl00_ContentPlaceHolder1_RBVC7_0"]',
+    'check_gi_tube_no': '//*[@id="ctl00_ContentPlaceHolder1_RBVC7_1"]',
+    'check_gi_tube_n/a': '//*[@id="ctl00_ContentPlaceHolder1_RBVC7_2"]',
+
+    'confirmed_sched_yes': '//*[@id="ctl00_ContentPlaceHolder1_RbVC5_0"]',
+    'confirmed_sched_request_change': '//*[@id="ctl00_ContentPlaceHolder1_RbVC5_1"]',
 
 
     # STOP ADDING HERE
@@ -1919,12 +2289,8 @@ visit_dict_lvn = {
     'self_determination': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SDe"]',
     'knowledge_related_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Kno"]',
     'language_comm_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Lan"]',
-    'offered_psychosocial': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PSy"]',
-    'offered_spiritual': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPIR"]',
-    'offered_bereavement': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_BRV"]',
-    'offered_other': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Oth"]',
-    'offered_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtCAP_PHYOther"]',
-
+    
+ 
     'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
 
 }
@@ -1966,6 +2332,7 @@ visit_dict_sw = {
 
 
 
+
     # psychosocial
 
     # ## NEED TO ADD ANXIETY DOWN TO THESE PHYSICAL COMFORT XP
@@ -1997,12 +2364,7 @@ visit_dict_sw = {
     'self_determination': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SDe"]',
     'knowledge_related_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Kno"]',
     'language_comm_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Lan"]',
-    'offered_psychosocial': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_PSy"]',
-    'offered_spiritual': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SPIR"]',
-    'offered_bereavement': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_BRV"]',
-    'offered_other': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Oth"]',
-    'offered_other_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtCAP_PHYOther"]',
-
+ 
     'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
 }
 

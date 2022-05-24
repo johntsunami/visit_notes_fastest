@@ -1,8 +1,8 @@
 # EXAMPLE
 # line= """'pt_anxiety': '//*[@id="ctl00_ContentPlaceHolder1_RB_NMS_Anx1"]',"""
 
-dict_list = []
-line= """'sleep_other': '//*[@id="ctl00_ContentPlaceHolder1_RB_SLP_OSY1"]',"""
+
+line= """'other_skin': '//*[@id="ctl00_ContentPlaceHolder1_RB_INT_OSY1"]',"""
 
 def create_dicts(string):
     num = 0
