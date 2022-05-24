@@ -2,13 +2,15 @@ from p1py import visit_list
 
 
 # Cleans data and writes to excel
-parse_findings = []
-add_to_write_list = ['visit_date', 'date_of_qa', 'staff_assigned', 'discipline', 'temp','pulse','resp','bp','weight','mac','ambulation','toileting','trasfer','dressing','feeding','bathing']
-write_list = []
-problem_list = []
-text_list = []
+
+
 
 def parse_list(list_of_dicts):
+    add_to_write_list = ['visit_date', 'date_of_qa', 'staff_assigned', 'discipline', 'temp','pulse','resp','bp','weight','mac','ambulation','toileting','trasfer','dressing','feeding','bathing']
+    parse_findings = []
+    write_list = []
+    problem_list = []
+    text_list = []
     print("checking for blank rows")
     def append_blank_row(*row_values):
         
@@ -222,15 +224,21 @@ def parse_list(list_of_dicts):
 
                 except:
                     print("missing vital maybe? it passed it")
-                 
-    return parse_findings, write_list
-parse_list(visit_list)
 
-print("")
-print("write_list: ", write_list)
-print("")
-print("parse_findings", parse_findings)
-print("")
-print("problem_list",problem_list)
-print("")
-print('text_list',text_list)
+    write_list.append(problem_list)
+    write_list.append(text_list)
+    print("")
+    print("write_list: ", write_list)
+    print("")
+    print("parse_findings", parse_findings)
+    print("")
+    print("problem_list",problem_list)
+    print("")
+    print('text_list',text_list)         
+    return write_list
+
+write_list =parse_list(visit_list)
+
+print("WRITE :",write_list)
+
+
