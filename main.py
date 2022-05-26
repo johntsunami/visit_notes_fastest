@@ -40,8 +40,7 @@ from openpyxl.styles import Font
 import winsound
 import psycopg2
 
-
-pt_name = "Sobczak"
+pt_name = "Stewart"
 
 # ana.doneza@gmail.com   Jcarr@artofhospicecare.com
 
@@ -74,7 +73,7 @@ today = date.today()
 
 # rasmussen "5013p"  Done[1190,1157,1193,villarini,lewellyn
 # Luvzit_02!    Aohc1234!!
-
+idg_notes_list = []
 findings = []
 final_findings = []
 # disables browser notifications  # OLD ONE BELOW
@@ -508,7 +507,7 @@ def get_all_values(xpath, printname):
         # print("passing empty str")
 
     else:
-        print("TRYING TO APPEND IT...", keyname)
+        # print("TRYING TO APPEND IT...", keyname)
         data_dict[keyname] = data
         return data_dict
 
@@ -709,23 +708,6 @@ def press_enter():
     perform_actions()
 
 
-def typing_backarrow(xpath_to_type_in, num_of_right_arrows, words_to_type):
-    sleep(.2)  # was .5
-    click(xpath_to_type_in)
-    var = find(xpath_to_type_in)
-
-    for i in range(num_of_right_arrows):
-        sleep(.1)
-        var.send_keys(Keys.ARROW_RIGHT)
-
-    for i in range(num_of_right_arrows*2):
-        sleep(.1)
-        var.send_keys(Keys.BACKSPACE)
-
-    var.send_keys(words_to_type)
-    sleep(.1)
-
-
 def add_dict(keyname, value):
     basic_dict = {}
     basic_dict[keyname] = value
@@ -761,15 +743,13 @@ def expand_once_comp_opened():  # second one in case first one didn't work
     expand_all_ass_tabs = "//*[@id='ctl00_ContentPlaceHolder1_ImgExpandAll']"
     click(expand_all_ass_tabs)
 
-
 ## THESE LISTS NEED TO BE ABOVE PARSE LIST
-
 
 visit_notes_list = []
 
 
-def parse_list(list_of_dicts):
-    add_to_write_list = ['visit_date', 'date_of_qa', 'staff_assigned', 'discipline', 'temp','pulse','resp','bp','weight','mac','ambulation','toileting','trasfer','dressing','feeding','bathing']
+def parse_nurse_visit(list_of_dicts):
+    add_to_write_list = ['visit_date','visit_type', 'date_of_qa', 'staff_assigned', 'discipline', 'temp','pulse','resp','bp','weight','mac','ambulation','toileting','trasfer','dressing','feeding','bathing']
     parse_findings = []
     write_list = []
     problem_list = []
@@ -991,7 +971,7 @@ def parse_list(list_of_dicts):
     write_list.append(str(problem_list))
     write_list.append(str(text_list))
     write_list.append(str(parse_findings))
-    
+
     print("")
     print("write_list: ", write_list)
     print("")
@@ -1001,6 +981,139 @@ def parse_list(list_of_dicts):
     print("")
     print('text_list',text_list)         
     return write_list
+
+
+def parse_sw_list(list_of_dicts):
+    add_to_write_list = ['visit_date', 'visit_type','date_of_qa', 'staff_assigned', 'discipline']
+    parse_findings = []
+    write_list = []
+    problem_list = []
+    text_list = []
+    print("checking for blank rows")
+    def append_blank_row(*row_values):
+        
+        # convert list of dict to one dict
+        result_dict = {}
+        for d in list_of_dicts:
+            # print(d)
+            result_dict.update(d)
+
+        count_num = 0
+        row_len = len(row_values)
+        for row in row_values:
+
+            for key, value in result_dict.items():
+                if row == key:
+
+                    if value == 'None':
+                        count_num += 1
+                        # print("added")
+                        # print("count_num:", count_num)
+                        if count_num == row_len:
+                            parse_findings.append("No selection on:" + row)
+    append_blank_row('covid_screen_yes', 'covid_screen_no')
+    append_blank_row('pt_report_pos_no','pt_report_pos_yes')
+    append_blank_row('pain_controlled_yes', 'pain_controlled_no', 'pain_controlled_n/a')
+    append_blank_row('pt_anxiety_none', 'pt_anxiety_mild', 'pt_anxiety_mod', 'pt_anxiety_sev')
+
+  
+    
+
+
+    for dictionary in list_of_dicts:
+        for key, val in dictionary.items():
+
+            for word in add_to_write_list:
+                if key == word:
+                    write_list.append(val)
+
+            def append_if_wrong(key_name, correct_value):
+
+                if key == key_name:
+                    # print(key_name, val)
+                    if val == correct_value:
+                        pass
+                    else:
+                        parse_findings.append(key + " not selected.")
+            append_if_wrong('form_type', '--Select One--')
+            append_if_wrong('covid_screened_yes', 'true')
+            append_if_wrong('pt_report_pos_no', 'true')
+            append_if_wrong('covid_followed', 'true')
+            append_if_wrong('utilized_ppe', 'true')
+            append_if_wrong('physical_comfort', 'true')
+            append_if_wrong('emotional_support','true')
+            append_if_wrong('safety_instructions', 'true')
+            append_if_wrong('environmental_needs', 'true')
+            append_if_wrong('knowledge_related_needs','true')
+            
+            
+
+       
+            #### IF ANY ARE UNSELECTED IT NOTIFIES
+            if key == 'form_type':
+                pass
+
+            else: 
+                if val == '--Select One--':
+                    parse_findings.append(key + " unselected")
+            
+
+            def if_true_add_problem_list():
+                true_list = ['language_comm_needs','pt_report_pos_yes','pain_controlled_no','pain_controlled_n/a']
+                if val == 'true':
+
+                    if 'mild' in key:
+                        problem_list.append(key)
+
+                    elif 'mod' in key:
+                        problem_list.append(key)
+
+                    elif 'sev' in key:
+                        problem_list.append(key)
+
+                
+                    for item in true_list:
+                        if key == item:
+                            problem_list.append(key)
+
+            if_true_add_problem_list()
+
+            def print_txt_other():
+                if 'txt' in key:
+                  
+                    if val == '':
+                        pass
+                    else:
+                        if val != 'None':
+                            print("KEY",key,val)
+                            text_list.append(key + val)
+                        else:
+                            pass
+
+                elif 'obs' in key:
+                    if val == '':
+                        pass
+                    else:
+
+                        text_list.append(key + val)
+            print_txt_other()
+
+        
+    write_list.append(str(problem_list))
+    write_list.append(str(text_list))
+    write_list.append(str(parse_findings))
+    print("")
+    print("write_list: ", write_list)
+    print("")
+    print("parse_findings", parse_findings)
+    print("")
+    print("problem_list",problem_list)
+    print("")
+    print('text_list',text_list)         
+    return write_list
+
+
+ 
 
 def apppend_list_excel(list_name):
     
@@ -1031,202 +1144,6 @@ wb = load_workbook(excel_location)
 ws = wb.active
 max_row = ws.max_row
 
-
-#####################################################################################
-############################## BEGINNING#############################################
-
-def search_pt():
-    search_pt = "//input[@name='ctl00$TopSearch$txtSearch']"
-    typing(search_pt, 0, pt_name)
-    sleep(1)
-    actions.send_keys(Keys.ENTER)
-    # print("pressed Enter")
-    perform_actions()
-
-
-def login_hospice():
-    p("_---------------------LOGIN_HOSPICE----------------------")
-    driver.get("https://hospicemd.com/")
-    driver.maximize_window()
-
-    login = """//input[@name="LoginIdtxtbox"]"""
-
-    typing(login, 0, login_name)
-
-    pw = """//input[@name="Passwordtxtbox"]"""
-
-    typing(pw, 0, password)
-
-    login = """//input[@name="loginbut"]"""
-    click(login)
-
-    # patient_list = "//a[@id='ctl00_HP2']"
-    # click(patient_list, 8)
-
-    search_pt()
-
-
-    # print("actions performed")
-login_hospice()
-
-
-def find_soc():
-    expand_assessment_xp = "//a[@id='ctl00_TreeView1n7']"
-    click(expand_assessment_xp)
-
-    nursing_xp = "//*[text()='Nursing']"
-    click(nursing_xp)
-
-    print("opening comprehensive")
-    open_comprehensive_xp = "(//*[text()='Comprehensive']/preceding-sibling::td)[2]"
-    click(open_comprehensive_xp)
-
-    soc = find(open_comprehensive_xp)
-    soc = soc.text
-    print("SOC:", soc)
-    add_dict('soc', soc)
-    return soc
-
-# soc = find_soc()
-
-
-def find_dx():
-    dx_dict = {}
-    print("opening comprehensive to get dx")
-    open_comprehensive_xp = "(//*[text()='Comprehensive']/preceding-sibling::td)[1]"
-    open_comp_for_pt_german = '//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[10]/td[1]/input'
-    try:
-        click(open_comprehensive_xp)
-        expand_all_ass_tabs = "//*[@id='ctl00_ContentPlaceHolder1_ImgExpandAll']"
-        click(expand_all_ass_tabs)
-
-    except:
-        click(open_comp_for_pt_german)
-        click(expand_all_ass_tabs)
-
-    expand_all_ass_tabs = "//*[@id='ctl00_ContentPlaceHolder1_ImgExpandAll']"
-    click(expand_all_ass_tabs)
-    dx = get_selected(
-        '//*[@id="ctl00_ContentPlaceHolder1_DrpPDDisease0"]', 'Diagnosis')
-    add_dict('dx', dx)
-    return dx
-# diagnosis = find_dx()
-
-
-def check_missing_visits(start_date):
-    print("CHECKING MISSING VISITS")
-    reports = click('//*[@id="ctl00_HyperLink1"]')
-    missing_visits = click('//*[@id="ctl00_ContentPlaceHolder1_MVisits"]')
-    sleep(1)
-
-    from_ = typing_backarrow(
-        '//*[@id="ctl00_ContentPlaceHolder1_txtfrom"]', 20, start_date)
-    sleep(1)
-    submit = click('//*[@id="ctl00_ContentPlaceHolder1_btnSearch"]')
-    start_date_rows = '/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div[*]/table/tbody/tr/td[2]/span'
-    try:
-        start_dates = find_elements(start_date_rows)
-    except:
-        print("No missing visits found")
-        return  # because if their are none it will skip function
-
-    rows_num = len(start_dates)
-
-    names_num = 2
-    iterate_num = 1
-    expand_num = 1  # this one goes up +3 each time since element isn't read on every number
-    for i in range(rows_num):
-        expander = f'/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div[{expand_num}]/table/tbody/tr/td[15]/img'
-        click(expander)
-        expand_num += 3
-        sleep(.3)
-
-    # FIND NAME
-
-    ### TRYING TO SEE IF I CAN PRINT NAMES AND DATES ##
-    all_rows = find_elements(
-        '/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div')
-    for row in all_rows:
-        row_text = row.text
-
-        potential_date_row = row_text[:3]
-        # print("potential_date_row",potential_date_row)
-
-        try:
-            potential_date_row = int(potential_date_row)
-            dates = row_text
-            # print("DATES:",dates)
-        except:
-            pass
-
-        if pt_name in row_text:
-            findings.append("Missing Visit Notes" + dates[4:-13])
-            print("FOUND MISSING NOTES AND ADDED TO FINDING")
-
-    # ########################### END #################
-
-    # name_row = '/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div[*]/div/div[*]/div/table/tbody/tr'
-    # name_rows = find_elements(name_row)
-    # # print("Name_row LEN:",len(name_rows))
-
-    # ## TESTING TO SEE IF I GET DATES AND ROW DATA
-    # dates_rows = '/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div'
-    # date_row = find_elements(dates_rows)
-
-    # row_list = []
-    # for row in date_row:
-    #     row = row.text
-    #     row_list.append(row)
-
-    # # save to list then parse list
-    # # print("ROW_LIST = ",row_list)
-
-    # missing_note_list = []
-
-    # ######################################## PASTED IN
-
-    # row_num = 0
-    # for row in date_row:
-    #     try:
-    #         finder = row.index(pt_name)
-    #         # print('finder',finder)
-    #         # print('row num',row_num)
-
-    #         date = date_row[row_num-1]
-    #         # print('date',date)
-
-    #     except:
-    #         pass
-
-    #     row_num += 1
-
-    # row_num = 0
-    # miss_num = 1
-    # for row in name_rows:
-    #     row = row.text      ##GOTTA CUT THIS STRING
-    #     # print("ROW:",row)
-
-    #     if pt_name in row:
-    #         miss_num += 1
-    #         print("MISSING NOTE ",row)
-    #         findings.append("MISSING NOTES"+ row)
-    #         missed = 'missing note'
-    #         add_dict(missed,row)
-    #         row_num += 1
-    # else:
-    #     pass
-
-    # print(row_num)
-
-# check_missing_visits(soc)
-
-
-        # HAVE IT CONV ASS TO DATETIME IF I NEED IT TO THEN OPEN NEWEST INFO
-# click_most_recent_assessment()
-# gather_nurse_ass needs click_most_recent_active
-###############################################
-############## XPATH DICTS#######################
-toay = str(today)
 assessment_xp_dict = {
     'visit_date': '//*[@id="ctl00_ContentPlaceHolder1_txtHDate"]',
     'visit_type': '//*[@id="ctl00_ContentPlaceHolder1_LblHeader"]',
@@ -1801,105 +1718,6 @@ assessment_xp_dict = {
     # KEEP ADDING ALL COMPREHENSIVE XPS HERE
 }
 
-
-
-
-def gather_nurse_assessment_data():
-    print("-------------Gather comp baseline -------------")
-    search_pt()
-    expand_assessment_tab()
-    click_nursing()
-
-    # GO TO COMP or recert if there is recert
-
-    # PICK MOST RECENT RECERT IF THERE IS ONE>
-    try:
-        assessment = click(
-            '//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[2]/td[1]/input')
-        expand_once_comp_opened()
-    except:
-        findings.append("No Nurse Assessment Found")
-        print("No assessment found")
-
-    nurse_assessment_list = []
-
-    current_url = driver.current_url
-    driver.get(current_url)
-    print("got current url", current_url)
-
-    # NOW JUST ADD ALL THE OTHER XPS
-    # sleep(10)
-
-    for key, value in assessment_xp_dict.items():
-        # print(key)
-
-        # print(value)
-        assessment_dict = get_all_values(value, key)
-        nurse_assessment_list.append(assessment_dict)
-
-    # WHERE SHALL I STORE ALL THIS DATA?  HOW CAN I MAKE IT FASTER
-
-    nurse_assessment_list.insert(1, {'visit_type': "Assessment"})
-    nurse_assessment_list.insert(2, {'date_of_qa': today})
-    return nurse_assessment_list
-
-# assessment_list = gather_nurse_assessment_data()
-
-
-def apppend_list_of_dictionary_row(name_list):
-
-    key_list = []
-    value_list = []
-
-    names = wb.get_sheet_names()  # this ones deprecated
-    # names = wb.sheetnames()
-
-    if pt_name not in names:
-        wb.create_sheet(pt_name)
-        wb.save(excel_location)
-
-    ws = wb[pt_name]
-    for dictionary in name_list:
-        try:
-            for key, value in dictionary.items():
-                if value is not None:
-                    if value != '':
-                        key_list.append(key)
-                        value_list.append(value)
-        except:
-            pass
-
-    # I CAN ADD NOT TO ADD IT IF THE DATE OF QA IS DONE ALREADY OR SOMETHING LIKE THAT>
-
-    ws.append(key_list)
-    ws.append(value_list)
-    wb.save(excel_location)
-    print("Added Assessment to Excel")
-
-# apppend_list_of_dictionary_row(assessment_list)
-
-
-# def print_important_findings():
-    # important_findings_list = []
-    # for dictionary in assessment_list:
-    #     for key,value in dictionary:
-    #         if value == None:
-    #             pass
-    #         elif value == "":
-    #             pass
-    #         else:
-    #             important_findings_list.append(dictionary)
-
-    # print("assessment info")
-
-    # for assessment in assessment_list:
-    #     print(assessment)
-
-    # print("")
-    # print(assessment_list)
-
-    # DO THE SAME BUT COLLECT IT FROM nurse notes
-
 visit_dict_rn = {
     'visit_date': '//*[@id="ctl00_ContentPlaceHolder1_txtHDate"]',
     'in_person': '//*[@id="ctl00_ContentPlaceHolder1_Assesscodeid_0"]',
@@ -2227,7 +2045,6 @@ visit_dict_rn = {
 
 
     'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
-
 }
 
 visit_dict_lvn = {
@@ -2553,7 +2370,6 @@ visit_dict_lvn = {
     
  
     'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
-
 }
 
 visit_dict_sw = {
@@ -2625,9 +2441,273 @@ visit_dict_sw = {
     'self_determination': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_SDe"]',
     'knowledge_related_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Kno"]',
     'language_comm_needs': '//*[@id="ctl00_ContentPlaceHolder1_CHK_CAP_Lan"]',
- 
     'narrative_txt': '//*[@id="ctl00_ContentPlaceHolder1_TxtComments"]',
 }
+
+
+#####################################################################################
+############################## BEGINNING#############################################
+
+def search_pt():
+    search_pt = "//input[@name='ctl00$TopSearch$txtSearch']"
+    typing(search_pt, 0, pt_name)
+    sleep(1)
+    actions.send_keys(Keys.ENTER)
+    # print("pressed Enter")
+    perform_actions()
+
+
+def login_hospice():
+    p("_---------------------LOGIN_HOSPICE----------------------")
+    driver.get("https://hospicemd.com/")
+    driver.maximize_window()
+
+    login = """//input[@name="LoginIdtxtbox"]"""
+
+    typing(login, 0, login_name)
+
+    pw = """//input[@name="Passwordtxtbox"]"""
+
+    typing(pw, 0, password)
+
+    login = """//input[@name="loginbut"]"""
+    click(login)
+
+    # patient_list = "//a[@id='ctl00_HP2']"
+    # click(patient_list, 8)
+
+    search_pt()
+
+
+    # print("actions performed")
+login_hospice()
+
+
+def find_soc():
+    expand_assessment_xp = "//a[@id='ctl00_TreeView1n7']"
+    click(expand_assessment_xp)
+
+    nursing_xp = "//*[text()='Nursing']"
+    click(nursing_xp)
+
+    print("opening comprehensive")
+    open_comprehensive_xp = "(//*[text()='Comprehensive']/preceding-sibling::td)[2]"
+    click(open_comprehensive_xp)
+
+    soc = find(open_comprehensive_xp)
+    soc = soc.text
+    print("SOC:", soc)
+    add_dict('soc', soc)
+    return soc
+soc = find_soc()
+
+def find_dx():
+    dx_dict = {}
+    print("opening comprehensive to get dx")
+    open_comprehensive_xp = "(//*[text()='Comprehensive']/preceding-sibling::td)[1]"
+    open_comp_for_pt_german = '//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[10]/td[1]/input'
+    try:
+        click(open_comprehensive_xp)
+        expand_all_ass_tabs = "//*[@id='ctl00_ContentPlaceHolder1_ImgExpandAll']"
+        click(expand_all_ass_tabs)
+
+    except:
+        click(open_comp_for_pt_german)
+        click(expand_all_ass_tabs)
+
+    expand_all_ass_tabs = "//*[@id='ctl00_ContentPlaceHolder1_ImgExpandAll']"
+    click(expand_all_ass_tabs)
+    dx = get_selected(
+        '//*[@id="ctl00_ContentPlaceHolder1_DrpPDDisease0"]', 'Diagnosis')
+    add_dict('dx', dx)
+    return dx
+diagnosis = find_dx()
+
+def check_missing_visits(start_date):
+    print("CHECKING MISSING VISITS")
+    reports = click('//*[@id="ctl00_HyperLink1"]')
+    missing_visits = click('//*[@id="ctl00_ContentPlaceHolder1_MVisits"]')
+    sleep(1)
+
+    from_ = typing_backarrow(
+        '//*[@id="ctl00_ContentPlaceHolder1_txtfrom"]', 20, start_date)
+    sleep(1)
+    submit = click('//*[@id="ctl00_ContentPlaceHolder1_btnSearch"]')
+    start_date_rows = '/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div[*]/table/tbody/tr/td[2]/span'
+    try:
+        start_dates = find_elements(start_date_rows)
+    except:
+        print("No missing visits found")
+        return  # because if their are none it will skip function
+
+    rows_num = len(start_dates)
+
+    names_num = 2
+    iterate_num = 1
+    expand_num = 1  # this one goes up +3 each time since element isn't read on every number
+    for i in range(rows_num):
+        expander = f'/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div[{expand_num}]/table/tbody/tr/td[15]/img'
+        click(expander)
+        expand_num += 3
+        sleep(.3)
+
+    # FIND NAME
+
+    ### TRYING TO SEE IF I CAN PRINT NAMES AND DATES ##
+    all_rows = find_elements(
+        '/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div')
+    for row in all_rows:
+        row_text = row.text
+
+        potential_date_row = row_text[:3]
+        # print("potential_date_row",potential_date_row)
+
+        try:
+            potential_date_row = int(potential_date_row)
+            dates = row_text
+            # print("DATES:",dates)
+        except:
+            pass
+
+        if pt_name in row_text:
+            findings.append("Missing Visit Notes" + dates[4:-13])
+            print("FOUND MISSING NOTES AND ADDED TO FINDING")
+
+    # ########################### END #################
+
+    # name_row = '/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div[*]/div/div[*]/div/table/tbody/tr'
+    # name_rows = find_elements(name_row)
+    # # print("Name_row LEN:",len(name_rows))
+
+    # ## TESTING TO SEE IF I GET DATES AND ROW DATA
+    # dates_rows = '/html/body/form/table/tbody/tr[1]/td/div/table/tbody/tr[2]/td/table/tbody/tr[3]/td[2]/div/table/tbody/tr/td/div/div[1]/div/div'
+    # date_row = find_elements(dates_rows)
+
+    # row_list = []
+    # for row in date_row:
+    #     row = row.text
+    #     row_list.append(row)
+
+    # # save to list then parse list
+    # # print("ROW_LIST = ",row_list)
+
+    # missing_note_list = []
+
+    # ######################################## PASTED IN
+
+    # row_num = 0
+    # for row in date_row:
+    #     try:
+    #         finder = row.index(pt_name)
+    #         # print('finder',finder)
+    #         # print('row num',row_num)
+
+    #         date = date_row[row_num-1]
+    #         # print('date',date)
+
+    #     except:
+    #         pass
+
+    #     row_num += 1
+
+    # row_num = 0
+    # miss_num = 1
+    # for row in name_rows:
+    #     row = row.text      ##GOTTA CUT THIS STRING
+    #     # print("ROW:",row)
+
+    #     if pt_name in row:
+    #         miss_num += 1
+    #         print("MISSING NOTE ",row)
+    #         findings.append("MISSING NOTES"+ row)
+    #         missed = 'missing note'
+    #         add_dict(missed,row)
+    #         row_num += 1
+    # else:
+    #     pass
+
+    # print(row_num)
+
+check_missing_visits(soc)
+
+
+        # HAVE IT CONV ASS TO DATETIME IF I NEED IT TO THEN OPEN NEWEST INFO
+
+today = str(today)
+
+
+def gather_nurse_assessment_data():
+
+    print("-------------Gather comp baseline -------------")
+    search_pt()
+    expand_assessment_tab()
+    click_nursing()
+
+    # GO TO COMP or recert if there is recert
+
+    # PICK MOST RECENT RECERT IF THERE IS ONE>
+    try:
+        assessment = click(
+            '//*[@id="ctl00_ContentPlaceHolder1_GridView1"]/tbody/tr[2]/td[1]/input')
+        expand_once_comp_opened()
+    except:
+        findings.append("No Nurse Assessment Found")
+        print("No assessment found")
+
+    nurse_assessment_list = []
+
+    current_url = driver.current_url
+    driver.get(current_url)
+    print("got current url", current_url)
+
+    # NOW JUST ADD ALL THE OTHER XPS
+    # sleep(10)
+
+    for key, value in assessment_xp_dict.items():
+        # print(key)
+
+        # print(value)
+        assessment_dict = get_all_values(value, key)
+        nurse_assessment_list.append(assessment_dict)
+
+    # WHERE SHALL I STORE ALL THIS DATA?  HOW CAN I MAKE IT FASTER
+
+    nurse_assessment_list.insert(1, {'visit_type': "Assessment"})
+    nurse_assessment_list.insert(2, {'date_of_qa': today})
+    return nurse_assessment_list
+assessment_list = gather_nurse_assessment_data()
+
+def apppend_list_of_dictionary_row(name_list):
+
+    key_list = []
+    value_list = []
+
+    names = wb.get_sheet_names()  # this ones deprecated
+    # names = wb.sheetnames()
+
+    if pt_name not in names:
+        wb.create_sheet(pt_name)
+        wb.save(excel_location)
+
+    ws = wb[pt_name]
+    for dictionary in name_list:
+        try:
+            for key, value in dictionary.items():
+                if value is not None:
+                    if value != '':
+                        key_list.append(key)
+                        value_list.append(value)
+        except:
+            pass
+
+    # I CAN ADD NOT TO ADD IT IF THE DATE OF QA IS DONE ALREADY OR SOMETHING LIKE THAT>
+
+    ws.append(key_list)
+    ws.append(value_list)
+    wb.save(excel_location)
+    # print("Added Assessment to Excel")
+apppend_list_of_dictionary_row(assessment_list)
+
 
 
 def gather_visit_notes_data():
@@ -2684,43 +2764,35 @@ def gather_visit_notes_data():
             for key, value in visit_dict_rn.items():
                 assessment_dict = get_all_values(value, key)
                 visit_list.append(assessment_dict)
-                print('added_dict')
+                # print('added_dict')
 
         visit_list.insert(1, {'visit_type': "Visit"})  # THIS WAS FORWARD ONE
         visit_list.insert(2, {'date_of_qa': str(today)})  # THIS WAS FORWARD ONE
-
-   
         visit_notes_list.append(visit_list)
 
-        write_list =parse_list(visit_list)
+        if discipline == 'LVN' or discipline == 'RN':
+            write_list =parse_nurse_visit(visit_list)
+            print("WRITE2 :",write_list)
+            apppend_list_excel(write_list)
 
-        print("WRITE2 :",write_list)
-        apppend_list_excel(write_list)
+        elif discipline == 'BSW' or discipline == 'MSW':
+            write_list = parse_sw_list(visit_list)
+            apppend_list_excel(write_list)
+            print("visit_list",visit_list)
+            print("evaluate sw notes and create parse for it")
+        
+        # ADD SC info here..
+        else:
+            pass
 
-       
 
         print("Reopening visit notes to gather info.")
         click('//*[@id="ctl00_TreeView1t30"]')
 
-    
     return visit_notes_list
-
-
 visit_notes_list = gather_visit_notes_data()
 
-
-
-print("SLEEPING 9999")
-sleep(999999)
-
-for visit in visit_notes_list:
-    apppend_list_of_dictionary_row(visit)
-
-
 print("done adding visit lists")
-
-
-idg_notes_list = []
 
 
 def get_idg_data():
@@ -2779,28 +2851,17 @@ def get_idg_data():
 
     return idg_notes_list
 
-# idg_notes_list = get_idg_data()
+idg_notes_list = get_idg_data()
 
 for idg in idg_notes_list:
     apppend_list_of_dictionary_row(idg)
 
 
-f = open('visit_note_list.txt', 'w')
-f.write(str(visit_notes_list))
-
-for i in range(3):
-    f.write('')
-
-
-for visit in visit_notes_list:
-    f.write(str(visit))
-
-f.close()
-
-
-print("NEED TO ADD ALL XPATHS FOR LVN IN DICT.. then add RN, BSW, etc,,## Then go back to practice.py and impliment new functions and add more")
+print("PROGRAM COMPLETED: NEED TO see how parsing does on RN then add parsing on idg and meds and poc.. ")
 
 # Then go back to practice.py and impliment new functions and add more
+
+
 
 
 ##########################################
