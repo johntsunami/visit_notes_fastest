@@ -627,6 +627,8 @@ def parse_assessments(list_of_dicts):
     problem_list = []
     text_list = []
     print("checking for blank rows")
+
+
     def append_blank_row(*row_values):
         
         # convert list of dict to one dict
@@ -837,6 +839,8 @@ def parse_assessments(list_of_dicts):
         write_list.append(shorter_str)
     else:
         write_list.append(str(text_list))
+
+
 
     if len(text_list) > 1: 
         list_to_string_newline = """{}""".format("\n".join(text_list[0:]))
@@ -1483,10 +1487,19 @@ def gather_nurse_assessment_data():
 
     print("Assessment_list",assessment_list)
 
+    heading = ['VISIT TYPE','Date of Visit','Person','Discipline','Temp','Pulse','Resp','BP','Weight','MAC','Ambulation','Toileting','Bathing or baseline','Text Info','Findings','Assessessment Baseline','Assessment Text','Assessment Findings']
+    apppend_list_to_sheetname(heading,pt_name)
     apppend_list_to_sheetname(assessment_list,pt_name)
     
 
     return nurse_assessment_list
+
+
+def add_value_list(listname):
+    print("LIST IS HERE +++++++++++++")
+    print(listname)
+    for i in range(10):   # THIS IS NEEDED TO PUT THE FINDINGS IN THE S COLUMN ON SHEET
+            listname.insert(-1, 'none')
 
 def gather_visit_notes_data():
     open_visit_notes = click('//*[@id="ctl00_TreeView1t30"]')
@@ -1527,6 +1540,9 @@ def gather_visit_notes_data():
                 visit_list.append(assessment_dict)
   
             write_list = parse_sw_list(visit_list)
+
+            add_value_list(write_list)
+
             
         elif discipline == 'LVN':
             print("Gathering LVN info")
@@ -1554,14 +1570,21 @@ def gather_visit_notes_data():
             for key, value in visit_dict_sw.items():
                 assessment_dict = get_all_values(value, key)
                 visit_list.append(assessment_dict)
-   
             write_list = parse_sw_list(visit_list)
+
+            
+            add_value_list(write_list)  # alligns the columns
             
         else:
             print("ERROR NO DISCIPLINE NOTED:")
             
 
         print("visit_list",visit_list)
+
+    
+
+
+
         apppend_list_to_sheetname(write_list,pt_name)
         
         visit_notes_list.append(visit_list)
